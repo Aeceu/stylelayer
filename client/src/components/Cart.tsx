@@ -7,10 +7,33 @@ import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { ScrollArea } from "./ui/scroll-area";
 import { removeFromCart } from "@/store/slices/cartSlices";
+import { useEffect, useState } from "react";
+import { TCartItem } from "@/store/types/cart";
 
 const Cart = () => {
   const { cart } = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch<AppDispatch>();
+  const [selectedCartItem, setSelectedCartItem] = useState<TCartItem[]>([]);
+  const [totalCheckoutPrice, setTotalCheckoutPrice] = useState(0);
+
+  const handleSelectedCartItem = (cartItem: TCartItem) => {
+    setSelectedCartItem([...selectedCartItem, cartItem]);
+  };
+
+  useEffect(() => {
+    selectedCartItem.map((item) => {
+      const itemPrice = parseInt(item.item.productPrice) * parseInt(item.quantity);
+      setTotalCheckoutPrice((prev) => prev + itemPrice);
+    });
+  }, [selectedCartItem]);
+
+  // TODO: Create a zod + rhf here to calculate the total check out price of the selected cart item. Also add functions to the checkbox.
+  // TODO: Create a zod + rhf here to calculate the total check out price of the selected cart item. Also add functions to the checkbox.
+  // TODO: Create a zod + rhf here to calculate the total check out price of the selected cart item. Also add functions to the checkbox.
+  // TODO: Create a zod + rhf here to calculate the total check out price of the selected cart item. Also add functions to the checkbox.
+  // TODO: Create a zod + rhf here to calculate the total check out price of the selected cart item. Also add functions to the checkbox.
+  // TODO: Create a zod + rhf here to calculate the total check out price of the selected cart item. Also add functions to the checkbox.
+  // TODO: Create a zod + rhf here to calculate the total check out price of the selected cart item. Also add functions to the checkbox.
 
   return (
     <Sheet>
@@ -85,7 +108,8 @@ const Cart = () => {
           </Label>
           <span className="w-max flex items-center gap-2">
             <Label className="text-sm">
-              Total (0 item): <span className="font-extrabold text-orange-500 ">₱ 0</span>
+              Total (0 item):{" "}
+              <span className="font-extrabold text-orange-500 ">₱ {totalCheckoutPrice}</span>
             </Label>
             <Button size="sm" className="bg-orange-500 text-white text-xs">
               Check out
