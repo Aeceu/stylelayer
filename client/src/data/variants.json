@@ -1,0 +1,42 @@
+{
+  "colors": [
+    {
+      "name": "black"
+    },
+    {
+      "name": "white"
+    },
+    {
+      "name": "green"
+    },
+    {
+      "name": "sky blue"
+    },
+    {
+      "name": "sage"
+    },
+    {
+      "name": "khaki"
+    },
+    {
+      "name": "maroon"
+    }
+  ],
+  "size": [
+    {
+      "name": "XS"
+    },
+    {
+      "name": "S"
+    },
+    {
+      "name": "M"
+    },
+    {
+      "name": "L"
+    },
+    {
+      "name": "XL"
+    }
+  ]
+}
