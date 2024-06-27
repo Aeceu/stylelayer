@@ -3,6 +3,7 @@ export type TCartItem = {
   quantity: string;
   size: string;
   color: string;
+  id: string;
 };
 
 export type TProduct = {

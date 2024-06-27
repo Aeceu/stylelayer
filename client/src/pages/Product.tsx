@@ -22,8 +22,8 @@ const Product = () => {
   const [selectedSize, setSelectedSize] = useState("");
 
   const dispatch = useDispatch<AppDispatch>();
-  const HandleAddToCart = () => {
-    dispatch(addtoCart({ item, quantity, color: selectedColor, size: selectedSize }));
+  const HandleAddToCart = (itemId: string | null) => {
+    dispatch(addtoCart({ item, quantity, color: selectedColor, size: selectedSize, id: itemId }));
   };
 
   useEffect(() => {
@@ -158,7 +158,7 @@ const Product = () => {
 
           <div className="mt-8 flex items-center gap-4">
             <Button
-              onClick={HandleAddToCart}
+              onClick={() => HandleAddToCart(itemId)}
               className="flex items-center gap-4 border-2 text-rose-600 border-rose-600 text-lg shadow-md hover:bg-white-shade hover:text-rose-600"
               variant={"outline"}
               size={"lg"}>
