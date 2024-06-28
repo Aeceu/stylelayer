@@ -138,11 +138,57 @@ export const updateProductStock = async (req: Request, res: Response) => {
 };
 
 export const getAllProducts = async (req: Request, res: Response) => {
+  const page = parseInt(req.query.page as string) || 1;
+  const pageSize = parseInt(req.query.pageSize as string) || 10;
+
   try {
+    const products = await prisma.product.findMany({
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      include: {
+        productImage: true,
+      },
+    });
+
+    const totalProducts = await prisma.product.count();
+    const totalPages = Math.ceil(totalProducts / pageSize);
+
+    res.status(200).json({
+      products,
+      totalPages,
+      currentPage: page,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "Failed to get all the products",
+      error,
+    });
+  }
+};
+
+export const getProductById = async (req: Request, res: Response) => {
+  try {
+    const productId = req.params.productId;
+
+    const product = await prisma.product.findFirst({
+      where: {
+        id: productId,
+      },
+      include: {
+        productImage: true,
+        ratings: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+    res.status(200).json(product);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Failed to get the product!",
       error,
     });
   }
