@@ -38,6 +38,7 @@ model Product {
   price        Float
   stock        Int
   sold         Int            @default(0)
+  variants     Json
   ratings      UserRating[]
   productImage ProductImage[]
   cart         CartItem[]
@@ -98,21 +99,21 @@ model UserRating {
 }
 
 model Order {
-  id              String        @id @default(uuid())
+  id String @id @default(uuid())
 
-  userId          String
-  user            User          @relation(fields: [userId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
-  totalAmount     Float
-  orderItems      OrderItem[]
-  trackingInfo    TrackingInfo?
-  status          OrderStatus   @default(PENDING)
+  totalAmount  Float
+  orderItems   OrderItem[]
+  trackingInfo TrackingInfo?
+  status       OrderStatus   @default(PENDING)
 
   addressId       String
-  shippingAddress Address       @relation(fields: [addressId], references: [id])
-  
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  shippingAddress Address @relation(fields: [addressId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model OrderItem {

@@ -26,16 +26,32 @@ import Tiptap from "@/components/Tiptap";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { handleFile } from "@/lib/handleFile";
 import toast from "react-hot-toast";
+import { Separator } from "@/components/ui/separator";
 
 const CreateProduct = () => {
   const form = useForm<TNewProduct>({
     resolver: zodResolver(newProductSchema),
+    defaultValues: {
+      name: "",
+      category: "",
+      description: "",
+      price: "0",
+      stocks: "0",
+    },
   });
 
   const handleSubmit = async (data: TNewProduct) => {
+    if (images.length <= 0) {
+      setImagesErrorMsg("Product image/s is required.");
+      return;
+    }
+    alert("SUCCESS!");
     console.log(data);
+    console.log(images);
+    console.log(variants);
   };
 
+  const [imagesErrorMsg, setImagesErrorMsg] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [selectedImage, setSelectedImage] = useState("");
   const [variants, setVariants] = useState<{ name: string; options: string[] }[]>([]);
@@ -82,30 +98,46 @@ const CreateProduct = () => {
           console.error("Error reading file:", error);
         });
     } else {
-      toast.error("Max image is reach!");
+      toast.error("Max image is reach!", {
+        className: "bg-[#222222] text-white border border-background-10",
+      });
     }
+  };
+
+  const handleClearData = () => {
+    setVariants([]);
+    setImages([]);
+    setImagesErrorMsg("");
+    setSelectedImage("");
+    setNewVariant("");
+    setNewVariantItem("");
+    setCreateVariant(false);
+    form.reset();
   };
 
   return (
     <ScrollArea className="w-full h-screen bg-[#0b0b0b] text-white flex flex-col p-4 ">
+      <Label className="font-extrabold text-3xl tracking-widest">Create new product</Label>
+      <Separator className="my-4" />
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
           className="w-full h-full flex flex-col gap-4 p-4">
           <div className=" flex items-start w-full   gap-4 p-2 ">
             <div className="shrink-0 w-1/4 flex flex-col gap-4">
-              <div className="h-[400px] border-dashed rounded-md border flex items-center justify-center">
+              <div className="h-[400px] w-full border-dashed rounded-md border flex items-center justify-center">
                 {selectedImage ? (
                   <img
                     src={selectedImage}
                     alt="Preview"
-                    className="w-full h-full rounded-md object-cover"
+                    className="w-full h-full rounded-md object-cover object-top"
                   />
                 ) : (
                   <Label>No image is chosen.</Label>
                 )}
               </div>
-              <span className="flex items-center gap-2">
+
+              <span className="flex flex-wrap items-center gap-2">
                 {images.length > 0 &&
                   images.map((item, i) => (
                     <img
@@ -113,7 +145,7 @@ const CreateProduct = () => {
                       key={i}
                       src={item}
                       alt="Preview"
-                      className="w-[50px] h-[50px] object-cover rounded-sm"
+                      className="w-[50px] h-[50px] object-cover object-top rounded-sm"
                     />
                   ))}
 
@@ -131,6 +163,9 @@ const CreateProduct = () => {
                   accept=".jpg, .png, .jpeg"
                 />
               </span>
+              {imagesErrorMsg && (
+                <Label className="text-xs tracking-widest text-red-500">{imagesErrorMsg}</Label>
+              )}
             </div>
             <div className=" w-full h-full flex flex-col gap-2">
               <FormField
@@ -297,6 +332,7 @@ const CreateProduct = () => {
               {form.formState.isSubmitting ? <Loader2 className="animate-spin" /> : "Create"}
             </Button>
             <Button
+              onClick={handleClearData}
               type="button"
               className="w-[80px] bg-red-600 hover:bg-red-500 text-white text-sm"
               size="sm">

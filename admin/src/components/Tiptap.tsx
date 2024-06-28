@@ -51,7 +51,7 @@ const Tiptap: React.FC<TiptapProps> = ({ value, onChange }) => {
     editorProps: {
       attributes: {
         class:
-          "min-h-[200px] h-full border border-background/10 rounded-md p-2 text-white bg-[#222222]",
+          "min-h-[100px] h-full border border-background/10 rounded-md p-2 text-white bg-[#222222]",
       },
     },
     onUpdate: ({ editor }) => {
