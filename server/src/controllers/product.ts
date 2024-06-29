@@ -10,6 +10,7 @@ export const createProduct = async (req: Request, res: Response) => {
       data.productImages.map(async (image) => {
         const uploadResponse = await cloudinary.uploader.upload(image, {
           folder: "stylelayer/productImage",
+          transformation: [{ quality: "auto" }],
         });
         return {
           imageId: uploadResponse.public_id,
@@ -23,8 +24,9 @@ export const createProduct = async (req: Request, res: Response) => {
         name: data.name,
         description: data.description,
         category: data.category,
-        price: data.price,
-        stock: data.stock,
+        price: Number(data.price),
+        stock: Number(data.stock),
+        variants: data.variants,
         productImage: {
           createMany: {
             data: productImages,
@@ -177,11 +179,6 @@ export const getProductById = async (req: Request, res: Response) => {
       },
       include: {
         productImage: true,
-        ratings: {
-          include: {
-            user: true,
-          },
-        },
       },
     });
     res.status(200).json(product);

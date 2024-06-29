@@ -6,6 +6,7 @@ export type TNewProduct = {
   stock: number;
   sold: number;
   productImages: string[];
+  variants: [{ name: string; options: string[] }];
 };
 
 export type TNewProductImages = {

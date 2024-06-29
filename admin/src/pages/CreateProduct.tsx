@@ -14,7 +14,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
 import {
   Select,
   SelectContent,
@@ -27,6 +26,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { handleFile } from "@/lib/handleFile";
 import toast from "react-hot-toast";
 import { Separator } from "@/components/ui/separator";
+import axios from "@/api/axios";
 
 const CreateProduct = () => {
   const form = useForm<TNewProduct>({
@@ -36,7 +36,7 @@ const CreateProduct = () => {
       category: "",
       description: "",
       price: "0",
-      stocks: "0",
+      stock: "0",
     },
   });
 
@@ -45,10 +45,24 @@ const CreateProduct = () => {
       setImagesErrorMsg("Product image/s is required.");
       return;
     }
-    alert("SUCCESS!");
-    console.log(data);
-    console.log(images);
-    console.log(variants);
+    const newProduct = {
+      ...data,
+      productImages: images,
+      variants,
+    };
+    try {
+      const res = await axios.post("/product", newProduct);
+      console.log(res.data);
+      toast.success(res.data.message, {
+        className: "bg-[#0b0b0b] text-white border border-background/30",
+      });
+      handleClearData();
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to create product!", {
+        className: "bg-[#0b0b0b] text-white border border-background/30",
+      });
+    }
   };
 
   const [imagesErrorMsg, setImagesErrorMsg] = useState("");
@@ -115,6 +129,7 @@ const CreateProduct = () => {
     form.reset();
   };
 
+  console.log(form.watch().description);
   return (
     <ScrollArea className="w-full h-screen bg-[#0b0b0b] text-white flex flex-col p-4 ">
       <Label className="font-extrabold text-3xl tracking-widest">Create new product</Label>
@@ -219,10 +234,10 @@ const CreateProduct = () => {
               />
               <FormField
                 control={form.control}
-                name="stocks"
+                name="stock"
                 render={({ field }) => (
                   <FormItem className="w-full flex items-center gap-4 h-[60px]">
-                    <FormLabel className="w-1/12 text-white p-2">Stocks</FormLabel>
+                    <FormLabel className="w-1/12 text-white p-2">Stock</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
