@@ -1,22 +1,23 @@
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { TProduct } from "@/store/types/cart";
-import { Minus, PackageCheck, Plus, ShoppingBag, Star } from "lucide-react";
+import { Loader2, Minus, PackageCheck, Plus, ShoppingBag, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import variants from "@/data/variants.json";
 import { Button } from "@/components/ui/button";
 import { Link, useSearchParams } from "react-router-dom";
-import products from "@/data/products.json";
 import ProductBreadCrumb from "@/components/ProductBreadCrumb";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import { addtoCart } from "@/store/slices/cartSlices";
+import axios from "@/store/api/axios";
 
 const Product = () => {
   const itemId = useSearchParams()[0].get("id");
-  const [item, setItem] = useState<TProduct | undefined>(undefined);
+  const [item, setItem] = useState<TProduct | null>(null);
+  const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(0);
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
@@ -27,16 +28,27 @@ const Product = () => {
   };
 
   useEffect(() => {
-    const fetchProduct = () => {
-      if (itemId) {
-        const productFound = products.find(
-          (product) => product.productName === itemId?.split("_").join(" ")
-        );
-        setItem(productFound);
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get(`/product/${itemId}`);
+        setItem(res.data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchProduct();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-[500px] flex flex-col gap-4 items-center p-8">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
+  }
 
   if (!item || !itemId) {
     return (

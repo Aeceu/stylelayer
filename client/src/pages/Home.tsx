@@ -1,9 +1,7 @@
 import CarouselCards from "@/components/CarouselCards";
-import ProductCard from "@/components/ProductCard";
 import Popup from "@/components/animation/popup";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, LucideArrowRight } from "lucide-react";
-import products from "@/data/products.json";
 
 const Home = () => {
   return (
@@ -113,19 +111,18 @@ const Home = () => {
         </div>
 
         <h1 className="w-full px-16 font-bold text-2xl tracking-wider">SEE WHAT&apos;S NEW</h1>
-        <ProductFeed />
       </div>
     </div>
   );
 };
 export default Home;
 
-const ProductFeed = () => {
-  return (
-    <div className="grid grid-cols-4 gap-6">
-      {products.map((item, i) => (
-        <ProductCard item={item} key={i} />
-      ))}
-    </div>
-  );
-};
+// const ProductFeed = () => {
+//   return (
+//     <div className="grid grid-cols-4 gap-6">
+//       {products.map((item, i) => (
+//         <ProductCard item={item} key={i} />
+//       ))}
+//     </div>
+//   );
+// };
