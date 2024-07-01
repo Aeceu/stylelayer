@@ -1,7 +1,8 @@
 import CarouselCards from "@/components/CarouselCards";
+import Footer from "@/components/Footer";
 import Popup from "@/components/animation/popup";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, LucideArrowRight } from "lucide-react";
+import { LucideArrowRight } from "lucide-react";
 
 const Home = () => {
   return (
@@ -94,35 +95,8 @@ const Home = () => {
           />
         </Popup>
       </div>
-
-      <div className="w-full flex flex-col gap-4 items-center justify-center p-4">
-        <div className="px-16 w-full flex items-center justify-between  gap-4">
-          <span className="flex items-center gap-2">
-            <p className="font-bold text-xl mr-4">Filters:</p>
-            <h1 className="font-semibold text-sm px-6 py-2 bg-white-shade rounded-full ">NEW</h1>
-            <h1 className="font-semibold text-sm px-6 py-2 bg-white-shade rounded-full ">
-              POPULAR
-            </h1>
-            <h1 className="font-semibold text-sm px-6 py-2 bg-white-shade rounded-full ">ALL</h1>
-          </span>
-          <h1 className="font-semibold text-sm px-6 py-2 bg-white-shade rounded-full flex items-center gap-2 mr-8">
-            Sort by <ChevronDown className="w-4 h-4" />
-          </h1>
-        </div>
-
-        <h1 className="w-full px-16 font-bold text-2xl tracking-wider">SEE WHAT&apos;S NEW</h1>
-      </div>
+      <Footer />
     </div>
   );
 };
 export default Home;
-
-// const ProductFeed = () => {
-//   return (
-//     <div className="grid grid-cols-4 gap-6">
-//       {products.map((item, i) => (
-//         <ProductCard item={item} key={i} />
-//       ))}
-//     </div>
-//   );
-// };

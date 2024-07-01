@@ -3,7 +3,9 @@ import {
   createProduct,
   deleteProduct,
   getAllProducts,
+  getCategories,
   getProductById,
+  getSearchByCategory,
   updateProductInformation,
   updateProductStock,
 } from "../controllers/product";
@@ -16,5 +18,8 @@ router.post("/product", createProduct);
 router.delete("/product/:productId", deleteProduct);
 router.patch("/product/:productId", updateProductInformation);
 router.patch("/product/stock/:productId", updateProductStock);
+
+router.get("/categories", getCategories);
+router.get("/search", getSearchByCategory);
 
 export default router;

@@ -1,7 +1,6 @@
 import { Outlet } from "react-router-dom";
 import DiscountAds from "./components/DiscountAds";
 import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
 
 const Layout = () => {
   return (
@@ -9,7 +8,6 @@ const Layout = () => {
       <DiscountAds />
       <Navbar />
       <Outlet />
-      <Footer />
     </div>
   );
 };

@@ -1,8 +1,5 @@
-import axios from "@/store/api/axios";
-import { TProduct } from "@/store/types/product";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-
 import {
   Pagination,
   PaginationContent,
@@ -13,34 +10,28 @@ import ProductCard from "@/components/ProductCard";
 import { Loader2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { fetchProducts, fetchProductsByCategory } from "@/store/actions/productActions";
 
 const Products = () => {
   const [searchParams] = useSearchParams();
   const page = searchParams.get("page") || "1";
   const pageSize = searchParams.get("pageSize") || "2";
+  const category = searchParams.get("category");
 
-  const [loading, setLoading] = useState(false);
-  const [totalPage, setTotalPage] = useState(1);
-  const [products, setProducts] = useState<TProduct[]>([]);
+  const { products, status, totalPage } = useSelector((state: RootState) => state.product);
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const res = await axios.get(`/products?page=${page}&pageSize=${pageSize}`);
-        setProducts(res.data.products);
-        setTotalPage(res.data.totalPages);
-        console.log(res.data);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProducts();
+    if (category) {
+      dispatch(fetchProductsByCategory({ category, page, pageSize }));
+    } else {
+      dispatch(fetchProducts({ page, pageSize }));
+    }
   }, []);
 
-  if (loading) {
+  if (status === "pending") {
     return (
       <div className="flex items-center justify-center h-[600px]">
         <Loader2 className="animate-spin w-10 h-10" />

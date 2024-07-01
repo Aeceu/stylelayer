@@ -142,18 +142,36 @@ export const updateProductStock = async (req: Request, res: Response) => {
 export const getAllProducts = async (req: Request, res: Response) => {
   const page = parseInt(req.query.page as string) || 1;
   const pageSize = parseInt(req.query.pageSize as string) || 10;
+  const category = req.query.category as string;
 
   try {
-    const products = await prisma.product.findMany({
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-      include: {
-        productImage: true,
-      },
-    });
+    let products;
+    let totalProducts;
+    let totalPages;
 
-    const totalProducts = await prisma.product.count();
-    const totalPages = Math.ceil(totalProducts / pageSize);
+    if (category) {
+      products = await prisma.product.findMany({
+        where: {
+          category,
+        },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        include: {
+          productImage: true,
+        },
+      });
+    } else {
+      products = await prisma.product.findMany({
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        include: {
+          productImage: true,
+        },
+      });
+    }
+
+    totalProducts = await prisma.product.count();
+    totalPages = Math.ceil(totalProducts / pageSize);
 
     res.status(200).json({
       products,
@@ -197,7 +215,9 @@ export const getCategories = async (req: Request, res: Response) => {
       select: {
         category: true,
       },
+      distinct: ["category"],
     });
+
     res.status(200).json(categories);
   } catch (error) {
     console.log(error);
@@ -210,54 +230,39 @@ export const getCategories = async (req: Request, res: Response) => {
 
 export const getSearchByCategory = async (req: Request, res: Response) => {
   try {
-    const search = req.params.search;
-    const category = req.params.category;
+    const search = req.query.search as string;
+    const category = req.query.category as string;
+    let products;
 
-    const products = await prisma.product.findMany({
-      where: {
-        name: {
-          contains: search,
-        },
-        OR: [
-          {
-            name: {
-              contains: search,
-            },
-            category,
+    if (category) {
+      products = await prisma.product.findMany({
+        where: {
+          category,
+          name: {
+            contains: search,
           },
-        ],
-      },
-      include: {
-        productImage: true,
-      },
-    });
+        },
+        include: {
+          productImage: true,
+        },
+      });
+    } else {
+      products = await prisma.product.findMany({
+        where: {
+          name: {
+            contains: search,
+          },
+        },
+        include: {
+          productImage: true,
+        },
+      });
+    }
     res.status(200).json(products);
   } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "Failed to get the products!",
-      error,
-    });
-  }
-};
-
-export const getProductsByCategories = async (req: Request, res: Response) => {
-  try {
-    const category = req.params.category;
-
-    const products = await prisma.product.findMany({
-      where: {
-        category,
-      },
-      include: {
-        productImage: true,
-      },
-    });
-    res.status(200).json(products);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      message: "Failed to get products by their categories",
       error,
     });
   }
