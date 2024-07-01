@@ -3,7 +3,6 @@ import { TProduct } from "@/store/types/product";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Pagination,
   PaginationContent,

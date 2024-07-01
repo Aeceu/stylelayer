@@ -190,3 +190,75 @@ export const getProductById = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getCategories = async (req: Request, res: Response) => {
+  try {
+    const categories = await prisma.product.findMany({
+      select: {
+        category: true,
+      },
+    });
+    res.status(200).json(categories);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Failed to get categories!",
+      error,
+    });
+  }
+};
+
+export const getSearchByCategory = async (req: Request, res: Response) => {
+  try {
+    const search = req.params.search;
+    const category = req.params.category;
+
+    const products = await prisma.product.findMany({
+      where: {
+        name: {
+          contains: search,
+        },
+        OR: [
+          {
+            name: {
+              contains: search,
+            },
+            category,
+          },
+        ],
+      },
+      include: {
+        productImage: true,
+      },
+    });
+    res.status(200).json(products);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Failed to get the products!",
+      error,
+    });
+  }
+};
+
+export const getProductsByCategories = async (req: Request, res: Response) => {
+  try {
+    const category = req.params.category;
+
+    const products = await prisma.product.findMany({
+      where: {
+        category,
+      },
+      include: {
+        productImage: true,
+      },
+    });
+    res.status(200).json(products);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Failed to get products by their categories",
+      error,
+    });
+  }
+};
