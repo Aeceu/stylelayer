@@ -1,5 +1,5 @@
 import { User2, Search, ChevronRight, Loader2 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Cart from "./Cart";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
@@ -14,18 +14,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Label } from "./ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  fetchSearchProduct,
-  fetchSearchProductByCategory,
-  getCategories,
-} from "@/store/actions/productActions";
+import { fetchSearchProduct, getCategories } from "@/store/actions/productActions";
 import { Link } from "react-router-dom";
 import { TProduct } from "@/store/types/product";
 
@@ -35,10 +24,8 @@ const Navbar = () => {
   const [categories, setCategories] = useState<{ category: string }[]>([]);
 
   const [searchLoading, setSearchLoading] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("");
   const [search, setSearch] = useState("");
-  const [searchResult, setSearchResult] = useState<TProduct[]>([]);
-  const dropdownRef: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+  const [searchResult, setSearchResult] = useState<TProduct[] | null>(null);
 
   useEffect(() => {
     getCategories().then((res) => {
@@ -51,21 +38,8 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    setSearchLoading(true);
-
-    if (selectedCategory) {
-      fetchSearchProductByCategory(search, selectedCategory)
-        .then((res) => {
-          if (Array.isArray(res)) {
-            setSearchResult(res);
-          } else {
-            console.log(res);
-          }
-        })
-        .finally(() => {
-          setSearchLoading(false);
-        });
-    } else if (search) {
+    if (search) {
+      setSearchLoading(true);
       fetchSearchProduct(search)
         .then((res) => {
           if (Array.isArray(res)) {
@@ -78,28 +52,17 @@ const Navbar = () => {
           setSearchLoading(false);
         });
     } else {
-      setSearchLoading(false);
+      setSearchResult(null);
     }
-  }, [search, selectedCategory]);
+  }, [search]);
 
   const clearSearch = () => {
-    setSelectedCategory("");
     setSearch("");
-    setSearchResult([]);
+    setSearchResult(null);
     setSearchLoading(false);
+    setIsActive(false);
   };
 
-  const handleBlur = (e: React.FocusEvent<HTMLFormElement>) => {
-    if (
-      dropdownRef.current &&
-      e.relatedTarget instanceof Node &&
-      dropdownRef.current.contains(e.relatedTarget)
-    ) {
-      return;
-    }
-    setIsActive(false);
-    clearSearch();
-  };
   return (
     <nav className="w-full h-[100px] border-b border-foreground/10  flex items-center justify-between  px-8 gap-8">
       <Link to={"/"} className={`w-1/4 text-5xl  title`}>
@@ -156,22 +119,8 @@ const Navbar = () => {
 
         <form
           onFocus={() => setIsActive(true)}
-          onBlur={handleBlur}
+          onBlur={clearSearch}
           className=" w-full bg-white-shade rounded-full flex items-center justify-between px-2">
-          {isActive && (
-            <Select value={selectedCategory} onValueChange={(e) => setSelectedCategory(e)}>
-              <SelectTrigger className="w-[180px] rounded-3xl">
-                <SelectValue placeholder="Category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((item) => (
-                  <SelectItem key={item.category} value={item.category}>
-                    {item.category}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
           <input
             type="text"
             value={search}
@@ -181,19 +130,12 @@ const Navbar = () => {
           />
           <Search className="w-8 h-8 mr-2" />
         </form>
-        {isActive && search && (
-          <div
-            ref={dropdownRef}
-            className="bg-white border rounded-md p-2 w-full absolute top-16 left-0 z-10 flex flex-col gap-2">
-            <Label
-              onClick={clearSearch}
-              className="text-xs w-max px-2 py-1 bg-foreground/10 rounded-full border cursor-pointer hover:bg-foreground/30 z-20">
-              Clear
-            </Label>
-            {searchLoading && <Loader2 className="animate-spin" />}
+        {searchResult && (
+          <div className="bg-white border rounded-md p-2 w-full absolute top-16 left-0 z-10 flex flex-col items-center gap-2">
+            {searchLoading && <Loader2 className="animate-spin w-8 h-8 text-center my-2" />}
             {searchResult.length > 0 ? (
               searchResult.map((item, i) => (
-                <Label key={i} className="text-lg font-extrabold tracking-widest">
+                <Label key={i} className="w-full text-lg font-extrabold tracking-widest">
                   {item.name}
                 </Label>
               ))

@@ -1,30 +1,28 @@
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { TProduct } from "@/store/types/cart";
 import { Loader2, Minus, PackageCheck, Plus, ShoppingBag, Star } from "lucide-react";
 import { useEffect, useState } from "react";
-import variants from "@/data/variants.json";
 import { Button } from "@/components/ui/button";
 import { Link, useSearchParams } from "react-router-dom";
 import ProductBreadCrumb from "@/components/ProductBreadCrumb";
-
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import { addtoCart } from "@/store/slices/cartSlices";
 import axios from "@/store/api/axios";
+import { TProductWithRatings } from "@/store/types/product";
 
 const Product = () => {
   const itemId = useSearchParams()[0].get("id");
-  const [item, setItem] = useState<TProduct | null>(null);
+  const [item, setItem] = useState<TProductWithRatings | null>(null);
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(0);
-  const [selectedColor, setSelectedColor] = useState("");
-  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedImage, setSelectedImage] = useState("");
+  const [selectedVariants, setSelectedVariants] = useState<{ name: string; option: string }[]>([]);
 
   const dispatch = useDispatch<AppDispatch>();
   const HandleAddToCart = (itemId: string | null) => {
-    dispatch(addtoCart({ item, quantity, color: selectedColor, size: selectedSize, id: itemId }));
+    dispatch(addtoCart({ item, quantity, variants: selectedVariants, id: itemId }));
   };
 
   useEffect(() => {
@@ -33,6 +31,7 @@ const Product = () => {
         setLoading(true);
         const res = await axios.get(`/product/${itemId}`);
         setItem(res.data);
+        setSelectedImage(res.data.productImage[0].imageUrl);
       } catch (error) {
         console.log(error);
       } finally {
@@ -41,6 +40,19 @@ const Product = () => {
     };
     fetchProduct();
   }, []);
+
+  const handleSelectedVariants = (name: string, option: string) => {
+    setSelectedVariants((prevVariants) => {
+      const existingVariantIndex = prevVariants.findIndex((variant) => variant.name === name);
+      if (existingVariantIndex !== -1) {
+        const updatedVariants = [...prevVariants];
+        updatedVariants[existingVariantIndex] = { name, option };
+        return updatedVariants;
+      } else {
+        return [...prevVariants, { name, option }];
+      }
+    });
+  };
 
   if (loading) {
     return (
@@ -66,32 +78,51 @@ const Product = () => {
 
   return (
     <div className="w-full flex flex-col gap-4 p-8">
-      <ProductBreadCrumb category={item.productCategory} name={item.productName} />
+      <ProductBreadCrumb category={item.category} name={item.name} />
 
       <div className="flex items-start gap-8 ">
-        <Dialog>
-          <DialogTrigger asChild>
-            <div className="bg-[#e2e2e1] w-1/4 h-[600px] overflow-hidden rounded-md relative cursor-pointer flex justify-center">
+        <div className="shrink-0 w-1/4 flex flex-col gap-4">
+          <div className="h-[400px] w-full  rounded-md border flex items-center justify-center">
+            <Dialog>
+              <DialogTrigger asChild>
+                {selectedImage ? (
+                  <img
+                    src={selectedImage}
+                    alt="Preview"
+                    className="w-full h-full rounded-md object-cover object-top"
+                  />
+                ) : (
+                  <Label>No image is chosen.</Label>
+                )}
+              </DialogTrigger>
+              <DialogContent className="p-0">
+                <img
+                  loading="lazy"
+                  src={selectedImage}
+                  alt={selectedImage}
+                  className="w-full h-[700px] object-cover object-top rounded-md"
+                />
+              </DialogContent>
+            </Dialog>
+          </div>
+
+          <span className="flex flex-wrap items-center gap-2">
+            {item.productImage.map((item, i) => (
               <img
-                loading="lazy"
-                src={item.productImage}
-                alt={item.productAlt}
-                className="w-full h-[700px] object-cover object-top"
+                onClick={() => setSelectedImage(item.imageUrl)}
+                key={i}
+                src={item.imageUrl}
+                alt="Preview"
+                className={`w-[50px] h-[50px] object-cover object-top rounded-sm ${
+                  selectedImage === item.imageUrl && "border-2 border-orange-500"
+                }`}
               />
-            </div>
-          </DialogTrigger>
-          <DialogContent className="p-0">
-            <img
-              loading="lazy"
-              src={item.productImage}
-              alt={item.productAlt}
-              className="w-full h-[700px] object-cover object-top rounded-md"
-            />
-          </DialogContent>
-        </Dialog>
+            ))}
+          </span>
+        </div>
 
         <div className="w-full leading-3 flex flex-col justify-between gap-4">
-          <Label className="tracking-wide font-bold text-4xl">{item.productName}</Label>
+          <Label className="tracking-wide font-bold text-4xl">{item.name}</Label>
           <Separator />
           <div className="flex items-center gap-2">
             <Label className="flex items-center gap-2">
@@ -99,7 +130,7 @@ const Product = () => {
                 <Star
                   key={i}
                   className={`w-5 h-5 text-orange-500 ${
-                    i + 1 <= item.ratings && "fill-orange-500"
+                    i + 1 <= item.ratings.length && "fill-orange-500"
                   }`}
                 />
               ))}
@@ -111,39 +142,31 @@ const Product = () => {
           </div>
 
           <div className="w-max  bg-white-shade p-4 flex items-center">
-            <Label className="text-3xl font-bold text-rose-500">
-              ₱{item.productPrice.split(".")[0]} - ₱{Number(item.productPrice.split(".")[0]) + 20}
-            </Label>
+            <Label className="text-3xl font-bold text-rose-500">₱{item.price}</Label>
           </div>
 
-          <div className="w-1/2 mt-4 flex flex-col gap-2">
-            <Label className="tracking-wide">Colors</Label>
-            <span className="flex flex-wrap gap-2">
-              {variants.colors.map((color, i) => (
-                <div
-                  key={i}
-                  className={`px-4 py-2 border cursor-pointer hover:bg-white-shade ${
-                    selectedColor === color.name && "border-rose-600 text-rose-600"
-                  }`}
-                  onClick={() => setSelectedColor(color.name)}>
-                  {color.name}
-                </div>
-              ))}
-            </span>
-            <Label className="mt-2 tracking-wide">Sizes</Label>
-            <span className="flex flex-wrap gap-2">
-              {variants.size.map((size, i) => (
-                <div
-                  key={i}
-                  className={`px-4 py-2 cursor-pointer hover:bg-white-shade border ${
-                    selectedSize === size.name && "border-rose-600 text-rose-600"
-                  }`}
-                  onClick={() => setSelectedSize(size.name)}>
-                  {size.name}
-                </div>
-              ))}
-            </span>
-            <Label className="mt-2 tracking-wide">Quantity</Label>
+          {item.variants.map((cat, i) => (
+            <div key={i} className="mt-2 flex flex-col gap-2">
+              <Label className="tracking-widest font-extrabold ">{cat.name}</Label>
+              <span className="flex flex-wrap gap-2">
+                {cat.options.map((option, idx) => (
+                  <div
+                    key={idx}
+                    className={`w-max px-4 py-2 border cursor-pointer hover:bg-white-shade 
+                      ${
+                        selectedVariants.find(
+                          (variant) => variant.name === cat.name && variant.option === option
+                        ) && "border border-orange-500"
+                      }`}
+                    onClick={() => handleSelectedVariants(cat.name, option)}>
+                    {option}
+                  </div>
+                ))}
+              </span>
+            </div>
+          ))}
+          <div className="mt-2 flex flex-col gap-2">
+            <Label className="tracking-widest font-extrabold ">quantity</Label>
             <div className="flex items-center w-max">
               <Button
                 onClick={() => setQuantity((prev) => (prev <= 0 ? (prev = 0) : prev - 1))}
@@ -155,22 +178,18 @@ const Product = () => {
                 {quantity}
               </Label>
               <Button
-                onClick={() =>
-                  setQuantity((prev) => (prev >= item.productQuantity ? prev : prev + 1))
-                }
+                onClick={() => setQuantity((prev) => (prev >= item.stock ? prev : prev + 1))}
                 className="w-[30px] h-[30px] border   flex items-center justify-center text-foreground bg-background hover:bg-white-shade rounded-none "
                 size={"icon"}>
                 <Plus className="w-4 h-4" />
               </Button>
-              <Label className="ml-2 text-foreground">
-                {item.productQuantity} pieces available
-              </Label>
+              <Label className="ml-2 text-foreground">{item.stock} pieces available</Label>
             </div>
           </div>
 
           <div className="mt-8 flex items-center gap-4">
             <Button
-              onClick={() => HandleAddToCart(itemId)}
+              onClick={() => HandleAddToCart(item.id)}
               className="flex items-center gap-4 border-2 text-rose-600 border-rose-600 text-lg shadow-md hover:bg-white-shade hover:text-rose-600"
               variant={"outline"}
               size={"lg"}>
@@ -192,7 +211,7 @@ const Product = () => {
         <div className="">
           <Label
             dangerouslySetInnerHTML={{
-              __html: item.productDescription,
+              __html: item.description,
             }}
             className="w-full text-lg tracking-wide leading-loose "
           />

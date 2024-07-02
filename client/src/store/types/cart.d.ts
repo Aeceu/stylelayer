@@ -1,7 +1,11 @@
+import { TProduct } from "./product";
+
 export type TCartItem = {
   item: TProduct;
   quantity: string;
-  size: string;
-  color: string;
+  variants: {
+    name: string;
+    option: string;
+  }[];
   id: string;
 };

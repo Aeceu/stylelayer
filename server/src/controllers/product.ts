@@ -197,6 +197,7 @@ export const getProductById = async (req: Request, res: Response) => {
       },
       include: {
         productImage: true,
+        ratings: true,
       },
     });
     res.status(200).json(product);

@@ -1,4 +1,11 @@
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../components/ui/sheet";
 import { ShoppingBag } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
@@ -18,19 +25,19 @@ const Cart = () => {
 
   const handleSelectCartItem = (cartItem: TCartItem) => {
     setSelectedCartItems([...selectedCartItems, cartItem]);
-    const itemPrice = parseInt(cartItem.item.productPrice) * parseInt(cartItem.quantity);
+    const itemPrice = parseInt(cartItem.item.price) * parseInt(cartItem.quantity);
     setTotalCheckoutPrice((prev) => prev + itemPrice);
   };
 
   const handleUnSelectCartItem = (cartItem: TCartItem) => {
     setSelectedCartItems(selectedCartItems.filter((item) => item.id !== cartItem.id));
-    const itemPrice = parseInt(cartItem.item.productPrice) * parseInt(cartItem.quantity);
+    const itemPrice = parseInt(cartItem.item.price) * parseInt(cartItem.quantity);
     setTotalCheckoutPrice((prev) => prev - itemPrice);
   };
 
   return (
     <Sheet>
-      <SheetTrigger>
+      <SheetTrigger asChild>
         <div className=" flex items-center gap-2">
           <span className="relative">
             <ShoppingBag className="w-6 h-6" />
@@ -42,66 +49,69 @@ const Cart = () => {
         </div>
       </SheetTrigger>
 
-      <SheetContent side={"right"} className="p-0">
-        <SheetHeader className="h-[70px] p-4 border-b shadow-md">
+      <SheetContent side={"right"} className="p-0 gap-0 flex flex-col">
+        <SheetHeader className=" p-4 border-b shadow-md">
           <SheetTitle className="text-orange-500 text-3xl font-extrabold ">
             Shopping Cart
           </SheetTitle>
+          <SheetDescription>
+            Make changes to your profile here. Click save when you're done.
+          </SheetDescription>
         </SheetHeader>
-        <ScrollArea className="h-[calc(100vh-70px-70px)] bg-white-shade">
-          <div className=" h-full flex flex-col items-center justify-center gap-2 p-2 ">
-            {cart.map((cartItem: TCartItem, i) => (
-              <div
-                key={i}
-                className="w-full h-full bg-white flex flex-col border-y shadow-md rounded-md ">
-                <div className="py-1 px-2 border-b  flex items-center gap-2">
-                  <Checkbox
-                    onCheckedChange={(prev) => {
-                      if (prev) {
-                        handleSelectCartItem(cartItem);
-                      } else {
-                        handleUnSelectCartItem(cartItem);
-                      }
-                    }}
-                  />
-                  <Label className="text-lg text-black font-extrabold tracking-wider line-clamp-1">
-                    {cartItem.item.productName}
-                  </Label>
-                </div>
-                <div className="flex items-center gap-2 p-2">
-                  <div className="shrink-0 w-[100px] h-full overflow-hidden">
-                    <img
-                      src={cartItem.item.productImage}
-                      alt={cartItem.item.productAlt}
-                      width={100}
-                      height={100}
-                      className="w-full rounded-md"
-                    />
-                  </div>
-                  <span className="p-2 w-full h-full flex flex-col justify-start gap-1">
-                    <Label className="text-black text-sm">
-                      Price: ₱ {parseInt(cartItem.item.productPrice) * parseInt(cartItem.quantity)}
-                    </Label>
-                    <Label className="text-black text-sm">
-                      Quantity: {cartItem.quantity} pieces
-                    </Label>
-                    <Label className="text-black text-sm">
-                      Variations: {cartItem.color}, {cartItem.size}
-                    </Label>
-
-                    <span className="mt-2 flex items-center justify-end gap-1">
-                      <Button
-                        onClick={() => dispatch(removeFromCart(cartItem.item.productName))}
-                        size={"sm"}
-                        className="text-xs bg-rose-500 hover:bg-rose-600 text-white">
-                        Delete
-                      </Button>
-                    </span>
-                  </span>
-                </div>
+        <ScrollArea className="h-full bg-white-shade flex flex-col items-center justify-center gap-2 p-2 ">
+          {cart.map((cartItem: TCartItem, i) => (
+            <div
+              key={i}
+              className="w-full h-full bg-white flex flex-col border-y shadow-md rounded-md ">
+              <div className="py-1 px-2 border-b  flex items-center gap-2">
+                <Checkbox
+                  onCheckedChange={(prev) => {
+                    if (prev) {
+                      handleSelectCartItem(cartItem);
+                    } else {
+                      handleUnSelectCartItem(cartItem);
+                    }
+                  }}
+                />
+                <Label className="text-lg text-black font-extrabold tracking-wider line-clamp-1">
+                  {cartItem.item.name}
+                </Label>
               </div>
-            ))}
-          </div>
+              <div className="flex items-center gap-2 p-2">
+                <div className="shrink-0 w-[100px] h-full overflow-hidden">
+                  <img
+                    src={cartItem.item.productImage[0].imageUrl}
+                    alt={cartItem.item.productImage[0].imageId}
+                    width={100}
+                    height={100}
+                    className="w-full rounded-md"
+                  />
+                </div>
+                <span className="p-2 w-full h-full flex flex-col justify-start gap-1">
+                  <Label className="text-black text-sm">
+                    Price: ₱{" "}
+                    {(parseInt(cartItem.item.price) * parseInt(cartItem.quantity)).toLocaleString()}
+                  </Label>
+                  <Label className="text-black text-sm">Quantity: {cartItem.quantity} pieces</Label>
+                  <Label className="text-black text-sm flex items-center gap-1">
+                    Variations:
+                    {cartItem.variants.map((item, i) => (
+                      <p key={i}>{item.option}</p>
+                    ))}
+                  </Label>
+
+                  <span className="mt-2 flex items-center justify-end gap-1">
+                    <Button
+                      onClick={() => dispatch(removeFromCart(cartItem.item.name))}
+                      size={"sm"}
+                      className="text-xs bg-rose-500 hover:bg-rose-600 text-white">
+                      Delete
+                    </Button>
+                  </span>
+                </span>
+              </div>
+            </div>
+          ))}
         </ScrollArea>
 
         <div className="w-full px-4 h-[70px] bg-white  flex justify-between items-center border shadow-md ">

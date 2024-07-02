@@ -1,4 +1,3 @@
-import { TProduct } from "@/store/types/cart";
 import { useState } from "react";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "./ui/drawer";
 import { Button } from "./ui/button";
@@ -6,9 +5,10 @@ import { Separator } from "./ui/separator";
 import { Label } from "./ui/label";
 import { Minus, PackageCheck, Plus, ShoppingBag, Star } from "lucide-react";
 import variants from "@/data/variants.json";
+import { TProductWithRatings } from "@/store/types/product";
 
 type AddToCartDrawerProps = {
-  item: TProduct;
+  item: TProductWithRatings;
 };
 
 const AddToCartDrawer: React.FC<AddToCartDrawerProps> = ({ item }) => {
@@ -27,15 +27,13 @@ const AddToCartDrawer: React.FC<AddToCartDrawerProps> = ({ item }) => {
         <DrawerHeader className="flex items-start gap-4">
           <div className="bg-[#e2e2e1] w-1/4 h-[600px] overflow-hidden rounded-md relative cursor-pointer flex justify-center">
             <img
-              src={item.productImage}
-              alt={item.productAlt}
+              src={item.productImage[0].imageUrl}
+              alt={item.productImage[0].imageId}
               className="w-full h-[700px] object-cover object-top"
             />
           </div>
           <div className=" leading-3 flex flex-col justify-between gap-4">
-            <DrawerTitle className="tracking-wide font-bold text-4xl">
-              {item.productName}
-            </DrawerTitle>
+            <DrawerTitle className="tracking-wide font-bold text-4xl">{item.name}</DrawerTitle>
             <Separator />
             <div className="flex items-center gap-2">
               <Label className="flex items-center gap-2">
@@ -43,7 +41,7 @@ const AddToCartDrawer: React.FC<AddToCartDrawerProps> = ({ item }) => {
                   <Star
                     key={i}
                     className={`w-5 h-5 text-orange-500 ${
-                      i + 1 <= item.ratings && "fill-orange-500"
+                      i + 1 <= item.ratings.length && "fill-orange-500"
                     }`}
                   />
                 ))}
@@ -56,7 +54,7 @@ const AddToCartDrawer: React.FC<AddToCartDrawerProps> = ({ item }) => {
 
             <div className="w-full  bg-white-shade p-4 flex items-center">
               <Label className="text-3xl font-bold text-rose-500">
-                ₱{item.productPrice.split(".")[0]} - ₱{Number(item.productPrice.split(".")[0]) + 20}
+                ₱{item.price} - ₱{Number(item.price) + 20}
               </Label>
             </div>
 
@@ -99,16 +97,12 @@ const AddToCartDrawer: React.FC<AddToCartDrawerProps> = ({ item }) => {
                   {quantity}
                 </Label>
                 <Button
-                  onClick={() =>
-                    setQuantity((prev) => (prev >= item.productQuantity ? prev : prev + 1))
-                  }
+                  onClick={() => setQuantity((prev) => (prev >= item.stock ? prev : prev + 1))}
                   className="w-[30px] h-[30px] border   flex items-center justify-center text-foreground bg-background hover:bg-white-shade rounded-none "
                   size={"icon"}>
                   <Plus className="w-4 h-4" />
                 </Button>
-                <Label className="ml-2 text-foreground">
-                  {item.productQuantity} pieces available
-                </Label>
+                <Label className="ml-2 text-foreground">{item.stock} pieces available</Label>
               </div>
             </div>
 

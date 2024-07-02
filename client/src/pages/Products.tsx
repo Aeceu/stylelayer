@@ -17,7 +17,7 @@ import { fetchProducts, fetchProductsByCategory } from "@/store/actions/productA
 const Products = () => {
   const [searchParams] = useSearchParams();
   const page = searchParams.get("page") || "1";
-  const pageSize = searchParams.get("pageSize") || "2";
+  const pageSize = searchParams.get("pageSize") || "10";
   const category = searchParams.get("category");
 
   const { products, status, totalPage } = useSelector((state: RootState) => state.product);

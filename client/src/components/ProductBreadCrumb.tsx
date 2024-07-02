@@ -20,13 +20,13 @@ const ProductBreadCrumb: FC<Props> = ({ category, name }) => {
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link to={"/"}>Home</Link>
+            <Link to={`/`}>Home</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link to="/">{category}</Link>
+            <Link to={`/products?page=1&pageSize=10&category=${category}`}>{category}</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
