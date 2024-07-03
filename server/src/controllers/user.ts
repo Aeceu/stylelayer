@@ -65,11 +65,11 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Password doesn't match!" });
     }
 
-    const accessToken = jwt.sign(userExists.id, process.env.TOKEN_SECRET!, {
+    const accessToken = jwt.sign({ id: userExists.id }, process.env.TOKEN_SECRET!, {
       expiresIn: "10s",
     });
 
-    const refreshToken = jwt.sign(userExists.id, process.env.TOKEN_SECRET!, {
+    const refreshToken = jwt.sign({ id: userExists.id }, process.env.TOKEN_SECRET!, {
       expiresIn: "1d",
     });
 
@@ -98,7 +98,7 @@ export const login = async (req: Request, res: Response) => {
     console.log(error);
     res.status(500).json({
       message: "Failed to log in!",
-      error,
+      error: error,
     });
   }
 };
@@ -153,10 +153,10 @@ export const refresh = async (req: Request, res: Response) => {
   if (!foundUser) return res.sendStatus(403);
 
   jwt.verify(refreshToken, process.env.TOKEN_SECRET!, (err: any, decoded: any) => {
-    if (err || foundUser.id !== decoded) {
+    if (err || foundUser.id !== decoded.id) {
       return res.sendStatus(403);
     }
-    const accessToken = jwt.sign(foundUser.id, process.env.TOKEN_SECRET!, {
+    const accessToken = jwt.sign({ id: foundUser.id }, process.env.TOKEN_SECRET!, {
       expiresIn: "10s",
     });
 

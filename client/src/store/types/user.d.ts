@@ -1,3 +1,6 @@
+import { loginSchema, signupSchema } from "@/schema/userSchema";
+import { z } from "zod";
+
 export type TUser = {
   id: string;
   firstName: string;
@@ -16,3 +19,6 @@ export type TUser = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type TUserLogin = z.infer<typeof loginSchema>;
+export type TUserSignup = z.infer<typeof signupSchema>;

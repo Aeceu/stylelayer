@@ -1,4 +1,5 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TUser } from "../types/user";
 import { handleLogin, handleLogout, handleRefresh, handleSignup } from "../actions/userAction";
 
@@ -7,6 +8,7 @@ type TInitialState = {
   accessToken: string;
   pageLoading: boolean;
   status: "idle" | "pending" | "completed" | "failed";
+  error: any | null;
 };
 
 const initialState: TInitialState = {
@@ -14,6 +16,7 @@ const initialState: TInitialState = {
   accessToken: "",
   status: "idle",
   pageLoading: false,
+  error: null,
 };
 
 const userSlice = createSlice({
@@ -28,18 +31,21 @@ const userSlice = createSlice({
       state.accessToken = "";
     },
   },
-  extraReducers(builder) {
+  extraReducers: (builder) => {
     builder
       .addCase(handleLogin.pending, (state) => {
         state.status = "pending";
+        state.error = null;
       })
       .addCase(handleLogin.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.accessToken = action.payload.accessToken;
         state.status = "completed";
+        state.error = null;
       })
-      .addCase(handleLogin.rejected, (state) => {
+      .addCase(handleLogin.rejected, (state, action) => {
         state.status = "failed";
+        state.error = action.payload;
       })
       .addCase(handleSignup.pending, (state) => {
         state.status = "pending";
@@ -49,13 +55,19 @@ const userSlice = createSlice({
         state.accessToken = action.payload.accessToken;
         state.status = "completed";
       })
-      .addCase(handleSignup.rejected, (state) => {
+      .addCase(handleSignup.rejected, (state, action) => {
         state.status = "failed";
+        state.error = action.payload;
       })
       .addCase(handleRefresh.pending, (state) => {
         state.pageLoading = true;
       })
-      .addCase(handleRefresh.fulfilled, (state) => {
+      .addCase(handleRefresh.fulfilled, (state, action) => {
+        state.pageLoading = false;
+        state.accessToken = action.payload.accessToken;
+        state.user = action.payload.user;
+      })
+      .addCase(handleRefresh.rejected, (state) => {
         state.pageLoading = false;
       })
       .addCase(handleLogout.pending, (state) => {

@@ -1,5 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../api/axios";
+import { handleAPIerror } from "@/lib/HandleAPIError";
+import toast from "react-hot-toast";
 
 export const handleSignup = createAsyncThunk(
   "user/handleSignup",
@@ -13,12 +15,14 @@ export const handleSignup = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const res = await axios.post("/login", { email, password, firstName, lastName });
+      const res = await axios.post("/signup", { email, password, firstName, lastName });
       console.log(res.data);
+      toast.success(res.data.message);
       return res.data;
     } catch (error) {
       console.log(error);
-      return rejectWithValue(error);
+      const apiError = handleAPIerror(error);
+      return rejectWithValue(apiError);
     }
   }
 );
@@ -35,10 +39,12 @@ export const handleLogin = createAsyncThunk(
         }
       );
       console.log(res.data);
+      toast.success(res.data.message);
       return res.data;
     } catch (error) {
       console.log(error);
-      return rejectWithValue(error);
+      const apiError = handleAPIerror(error);
+      return rejectWithValue(apiError);
     }
   }
 );
@@ -54,7 +60,8 @@ export const handleRefresh = createAsyncThunk(
       return res.data;
     } catch (error) {
       console.log(error);
-      rejectWithValue(error);
+      const apiError = handleAPIerror(error);
+      return rejectWithValue(apiError);
     }
   }
 );
@@ -67,10 +74,12 @@ export const handleLogout = createAsyncThunk(
         withCredentials: true,
       });
       console.log(res.data);
+      toast.success(res.data.message);
       return res.data;
     } catch (error) {
       console.log(error);
-      return rejectWithValue(error);
+      const apiError = handleAPIerror(error);
+      return rejectWithValue(apiError);
     }
   }
 );

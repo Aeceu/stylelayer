@@ -10,13 +10,13 @@ import Signup from "./pages/Signup";
 const App = () => {
   return (
     <Routes>
-      {/* <Route element={<PersistentLogin />}> */}
-      <Route element={<Layout />}>
-        <Route index element={<Home />} />
-        <Route path="product?" element={<Product />} />
-        <Route path="products?" element={<Products />} />
+      <Route element={<PersistentLogin />}>
+        <Route element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="product?" element={<Product />} />
+          <Route path="products?" element={<Products />} />
+        </Route>
       </Route>
-      {/* </Route> */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
     </Routes>
