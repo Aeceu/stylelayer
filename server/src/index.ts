@@ -1,20 +1,35 @@
 import cors from "cors";
 import dotenv from "dotenv";
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 
+import user from "./routes/user";
 import cart from "./routes/cart";
 import product from "./routes/product";
 
 dotenv.config();
 const app = express();
+const allowedOrigin = "http://localhost:5173";
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(
+  cors({
+    origin: allowedOrigin,
+  })
+);
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const origin = req.headers.origin;
+  if (allowedOrigin === origin) {
+    res.header("Access-Control-Allow-Credentials", "true");
+  }
 
+  next();
+});
+
+app.use("/api/v1", user);
 app.use("/api/v1", cart);
 app.use("/api/v1", product);
 

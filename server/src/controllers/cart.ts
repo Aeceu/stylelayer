@@ -1,5 +1,6 @@
 import { Response, Request } from "express";
 import prisma from "../utils/prisma";
+import { TAddToCartBody } from "../types/cart";
 
 export const getCartByUserId = async (req: Request, res: Response) => {
   try {
@@ -30,7 +31,7 @@ export const getCartByUserId = async (req: Request, res: Response) => {
 
 export const addToCart = async (req: Request, res: Response) => {
   const userId = req.params.userId;
-  const { productId, color, size, quantity } = req.body;
+  const { productId, variants, quantity }: TAddToCartBody = req.body;
 
   try {
     let cart = await prisma.cart.findUnique({
@@ -47,47 +48,25 @@ export const addToCart = async (req: Request, res: Response) => {
       });
     }
 
-    const existingCartItem = cart.cartItem.find(
-      (item) => item.productId === productId && item.size === size && item.color === color
-    );
-
-    let newCartItem;
-    if (existingCartItem) {
-      await prisma.cartItem.update({
-        where: { id: existingCartItem.id },
-        data: { quantity: existingCartItem.quantity + quantity },
-      });
-    } else {
-      newCartItem = await prisma.cartItem.create({
-        data: {
-          Cart: { connect: { id: cart.id } },
-          product: { connect: { id: productId } },
-          quantity,
-          size,
-          color,
+    const newCartItem = await prisma.cartItem.create({
+      data: {
+        Cart: { connect: { id: cart.id } },
+        product: { connect: { id: productId } },
+        quantity: Number(quantity),
+        variants,
+      },
+      include: {
+        product: {
+          include: {
+            productImage: true,
+          },
         },
-      });
-    }
-
-    const updatedCartItems = await prisma.cartItem.findMany({
-      where: { cartId: cart.id },
-      include: { product: true },
-    });
-
-    const subtotal = updatedCartItems.reduce(
-      (acc, item) => acc + item.quantity * item.product.price,
-      0
-    );
-
-    await prisma.cart.update({
-      where: { id: cart.id },
-      data: { subtotal },
+      },
     });
 
     res.status(200).json({
       message: "Item added to cart successfully!",
       cartItem: newCartItem,
-      subtotal,
     });
   } catch (error) {
     console.error("Error adding item to cart:", error);

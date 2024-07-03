@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import Cart from "./Cart";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { Button } from "./ui/button";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -157,13 +156,17 @@ const Navbar = () => {
             </div>
           ) : (
             <div className="relative flex items-center bg-white-shade p-2 gap-1 rounded-full">
-              <Button className="flex items-center gap-1 rounded-full bg-transparent text-black hover:bg-white">
+              <Link
+                to={"/login"}
+                className="px-4 py-2 flex items-center gap-1 rounded-full bg-transparent text-black hover:bg-white">
                 <User2 className="w-4 h-4" />
                 Login
-              </Button>
-              <Button className="flex items-center gap-1 rounded-full bg-rose-600 hover:bg-rose-500 text-white">
+              </Link>
+              <Link
+                to={"/signup"}
+                className="px-4 py-2 flex items-center gap-1 rounded-full bg-rose-600 hover:bg-rose-500 text-white">
                 Sign up <ChevronRight className="w-4 h-4 " />
-              </Button>
+              </Link>
             </div>
           )}
         </span>
