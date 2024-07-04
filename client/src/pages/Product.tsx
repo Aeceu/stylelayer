@@ -6,36 +6,48 @@ import { Button } from "@/components/ui/button";
 import { Link, useSearchParams } from "react-router-dom";
 import ProductBreadCrumb from "@/components/ProductBreadCrumb";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/store/store";
-import { addtoCart } from "@/store/slices/cartSlices";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
 import axios from "@/store/api/axios";
 import { TProductWithRatings } from "@/store/types/product";
+import { handleAddToCart } from "@/store/actions/cartActions";
 
 const Product = () => {
   const itemId = useSearchParams()[0].get("id");
   const [item, setItem] = useState<TProductWithRatings | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [isloading, setIsLoading] = useState(false);
   const [quantity, setQuantity] = useState(0);
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedVariants, setSelectedVariants] = useState<{ name: string; option: string }[]>([]);
 
+  const { user } = useSelector((state: RootState) => state.user);
+  const { loading } = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch<AppDispatch>();
-  const HandleAddToCart = (itemId: string | null) => {
-    dispatch(addtoCart({ item, quantity, variants: selectedVariants, id: itemId }));
+
+  const HandleAddToCart = (itemId: string) => {
+    if (user) {
+      dispatch(
+        handleAddToCart({
+          productId: itemId,
+          quantity,
+          userId: user.id,
+          variants: selectedVariants,
+        })
+      );
+    }
   };
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        setLoading(true);
+        setIsLoading(true);
         const res = await axios.get(`/product/${itemId}`);
         setItem(res.data);
         setSelectedImage(res.data.productImage[0].imageUrl);
       } catch (error) {
         console.log(error);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
     fetchProduct();
@@ -54,7 +66,7 @@ const Product = () => {
     });
   };
 
-  if (loading) {
+  if (isloading) {
     return (
       <div className="min-h-[500px] flex flex-col gap-4 items-center p-8">
         <Loader2 className="animate-spin" />
@@ -189,11 +201,21 @@ const Product = () => {
 
           <div className="mt-8 flex items-center gap-4">
             <Button
+              disabled={loading}
               onClick={() => HandleAddToCart(item.id)}
               className="flex items-center gap-4 border-2 text-rose-600 border-rose-600 text-lg shadow-md hover:bg-white-shade hover:text-rose-600"
               variant={"outline"}
               size={"lg"}>
-              Add to Cart <ShoppingBag className="w-6 h-6" />
+              {loading ? (
+                <>
+                  Adding....
+                  <Loader2 className="animate-spin w-6 h-6" />
+                </>
+              ) : (
+                <>
+                  Add to Cart <ShoppingBag className="w-6 h-6" />
+                </>
+              )}
             </Button>
             <Button
               className="flex items-center gap-4 text-white border-2 border-rose-600 bg-rose-600 text-lg shadow-md hover:bg-rose-500 hover:text-white"

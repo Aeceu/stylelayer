@@ -13,11 +13,12 @@ import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { ScrollArea } from "./ui/scroll-area";
-import { removeFromCart } from "@/store/slices/cartSlices";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TCartItem } from "@/store/types/cart";
+import { getUserCart, handleRemoveFromCart } from "@/store/actions/cartActions";
 
 const Cart = () => {
+  const { user } = useSelector((state: RootState) => state.user);
   const { cart } = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch<AppDispatch>();
   const [selectedCartItems, setSelectedCartItems] = useState<TCartItem[]>([]);
@@ -25,15 +26,19 @@ const Cart = () => {
 
   const handleSelectCartItem = (cartItem: TCartItem) => {
     setSelectedCartItems([...selectedCartItems, cartItem]);
-    const itemPrice = parseInt(cartItem.item.price) * parseInt(cartItem.quantity);
+    const itemPrice = parseInt(cartItem.product.price) * parseInt(cartItem.quantity);
     setTotalCheckoutPrice((prev) => prev + itemPrice);
   };
 
   const handleUnSelectCartItem = (cartItem: TCartItem) => {
     setSelectedCartItems(selectedCartItems.filter((item) => item.id !== cartItem.id));
-    const itemPrice = parseInt(cartItem.item.price) * parseInt(cartItem.quantity);
+    const itemPrice = parseInt(cartItem.product.price) * parseInt(cartItem.quantity);
     setTotalCheckoutPrice((prev) => prev - itemPrice);
   };
+
+  useEffect(() => {
+    if (user?.id) dispatch(getUserCart(user.id));
+  }, []);
 
   return (
     <Sheet>
@@ -74,14 +79,14 @@ const Cart = () => {
                   }}
                 />
                 <Label className="text-lg text-black font-extrabold tracking-wider line-clamp-1">
-                  {cartItem.item.name}
+                  {cartItem.product.name}
                 </Label>
               </div>
               <div className="flex items-center gap-2 p-2">
                 <div className="shrink-0 w-[100px] h-full overflow-hidden">
                   <img
-                    src={cartItem.item.productImage[0].imageUrl}
-                    alt={cartItem.item.productImage[0].imageId}
+                    src={cartItem.product.productImage[0].imageUrl}
+                    alt={cartItem.product.productImage[0].imageId}
                     width={100}
                     height={100}
                     className="w-full rounded-md"
@@ -90,7 +95,9 @@ const Cart = () => {
                 <span className="p-2 w-full h-full flex flex-col justify-start gap-1">
                   <Label className="text-black text-sm">
                     Price: ₱{" "}
-                    {(parseInt(cartItem.item.price) * parseInt(cartItem.quantity)).toLocaleString()}
+                    {(
+                      parseInt(cartItem.product.price) * parseInt(cartItem.quantity)
+                    ).toLocaleString()}
                   </Label>
                   <Label className="text-black text-sm">Quantity: {cartItem.quantity} pieces</Label>
                   <Label className="text-black text-sm flex items-center gap-1">
@@ -102,7 +109,7 @@ const Cart = () => {
 
                   <span className="mt-2 flex items-center justify-end gap-1">
                     <Button
-                      onClick={() => dispatch(removeFromCart(cartItem.item.name))}
+                      onClick={() => dispatch(handleRemoveFromCart(cartItem.id))}
                       size={"sm"}
                       className="text-xs bg-rose-500 hover:bg-rose-600 text-white">
                       Delete

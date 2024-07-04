@@ -1,7 +1,7 @@
 import { TProduct } from "./product";
 
 export type TCartItem = {
-  item: TProduct;
+  product: TProduct;
   quantity: string;
   variants: {
     name: string;

@@ -130,18 +130,18 @@ const Navbar = () => {
           <Search className="w-8 h-8 mr-2" />
         </form>
         {searchResult && (
-          <div className="bg-white border rounded-md p-2 w-full absolute top-16 left-0 z-10 flex flex-col items-center gap-2">
+          <ul className="bg-white border rounded-md p-2 w-full absolute top-16 left-0 z-10 flex flex-col items-center gap-2">
             {searchLoading && <Loader2 className="animate-spin w-8 h-8 text-center my-2" />}
             {searchResult.length > 0 ? (
               searchResult.map((item, i) => (
-                <Label key={i} className="w-full text-lg font-extrabold tracking-widest">
+                <li key={i} className="w-full  font-extrabold tracking-widest">
                   {item.name}
-                </Label>
+                </li>
               ))
             ) : (
               <Label className="text-center">No item available.</Label>
             )}
-          </div>
+          </ul>
         )}
       </div>
 

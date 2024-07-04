@@ -13,6 +13,16 @@ const PersistentLogin = () => {
     !accessToken && dispatch(handleRefresh());
   }, []);
 
-  return <>{pageLoading ? <Loader2 className="animate-spin w-10 h-10" /> : <Outlet />}</>;
+  return (
+    <>
+      {pageLoading ? (
+        <div className="flex items-center justify-center w-full h-screen">
+          <Loader2 className="animate-spin w-10 h-10" />
+        </div>
+      ) : (
+        <Outlet />
+      )}
+    </>
+  );
 };
 export default PersistentLogin;

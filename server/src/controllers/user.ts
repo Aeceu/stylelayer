@@ -4,6 +4,7 @@ import exclude from "../utils/exclude";
 import { TLogin, TSignup } from "../types/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import cloudinary from "../utils/cloudinary";
 
 export const signup = async (req: Request, res: Response) => {
   const { email, password, firstName, lastName }: TSignup = req.body;
@@ -34,7 +35,7 @@ export const signup = async (req: Request, res: Response) => {
       },
     });
     res.status(200).json({
-      message: "User account created successfully!",
+      message: "your account created successfully!",
     });
   } catch (error) {
     console.log(error);
@@ -164,4 +165,84 @@ export const refresh = async (req: Request, res: Response) => {
 
     res.status(200).json({ user: userWithoutPass, accessToken });
   });
+};
+
+export const updateUserProfilePicture = async (req: Request, res: Response) => {
+  try {
+    const { image } = req.body;
+    const userId = req.params.userId;
+
+    const result = await cloudinary.uploader.upload(image, {
+      folder: "stylelayer/userImage",
+      transformation: [{ quality: "auto" }],
+    });
+
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        profilePicId: result.public_id,
+        profilePicUrl: result.secure_url,
+      },
+    });
+
+    res.status(200).json({
+      message: "your profile image updated successfully!",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Failed to update user profile picture!",
+      error: error,
+    });
+  }
+};
+
+export const updateUserInformation = async (req: Request, res: Response) => {
+  try {
+    const data = req.body;
+    const userId = req.params.userId;
+
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data,
+    });
+
+    res.status(200).json({
+      message: "Your information updated successfully!",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Failed to update user information!",
+      error: error,
+    });
+  }
+};
+
+export const deleteUserAccount = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.userId;
+
+    const user = await prisma.user.delete({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user) return res.status(400).json({ message: "User does not exists!" });
+
+    if (user.profilePicId) cloudinary.uploader.destroy(user.profilePicId);
+    res.status(200).json({ message: "User account deleted successfully!" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Failed to delete your account!",
+      error: error,
+    });
+  }
 };

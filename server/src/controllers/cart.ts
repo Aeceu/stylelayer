@@ -80,44 +80,16 @@ export const addToCart = async (req: Request, res: Response) => {
 export const deleteFromCart = async (req: Request, res: Response) => {
   try {
     const cartItemId = req.params.cartItemId;
-    const cartId = req.params.cartId;
 
-    await prisma.cartItem.delete({
+    const deletedItem = await prisma.cartItem.delete({
       where: {
         id: cartItemId,
       },
     });
 
-    let cart = await prisma.cart.findFirst({
-      where: {
-        id: cartId,
-      },
-      include: {
-        cartItem: {
-          include: {
-            product: true,
-          },
-        },
-      },
-    });
-
-    if (!cart) {
-      return res.status(400).json({ message: "User doesn't have a cart!" });
-    }
-
-    const newSubTotal = cart.cartItem.reduce(
-      (acc, item) => acc + item.quantity * item.product.price,
-      0
-    );
-
-    await prisma.cart.update({
-      where: { id: cart.id },
-      data: { subtotal: newSubTotal },
-    });
-
     res.status(200).json({
       message: "Item deleted from cart!",
-      subtotal: newSubTotal,
+      cartItem: deletedItem,
     });
   } catch (error) {
     res.status(500).json({
