@@ -1,48 +1,99 @@
 import { useState } from "react";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "./ui/drawer";
+import { Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTrigger } from "./ui/drawer";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import { Label } from "./ui/label";
-import { Minus, PackageCheck, Plus, ShoppingBag, Star } from "lucide-react";
-import variants from "@/data/variants.json";
-import { TProductWithRatings } from "@/store/types/product";
+import { Loader2, Minus, Plus, ShoppingBag, Star } from "lucide-react";
+import { TProduct } from "@/store/types/product";
+import { AppDispatch, RootState } from "@/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { handleAddToCart } from "@/store/actions/cartActions";
 
 type AddToCartDrawerProps = {
-  item: TProductWithRatings;
+  item: TProduct;
 };
 
 const AddToCartDrawer: React.FC<AddToCartDrawerProps> = ({ item }) => {
+  const [open, setOpen] = useState(false);
   const [quantity, setQuantity] = useState(0);
-  const [selectedColor, setSelectedColor] = useState("");
-  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedImage, setSelectedImage] = useState(item.productImage[0].imageUrl);
+  const [selectedVariants, setSelectedVariants] = useState<{ name: string; option: string }[]>([]);
+
+  const { user } = useSelector((state: RootState) => state.user);
+  const { loading } = useSelector((state: RootState) => state.cart);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const HandleAddToCart = (itemId: string) => {
+    if (user) {
+      dispatch(
+        handleAddToCart({
+          productId: itemId,
+          quantity,
+          userId: user.id,
+          variants: selectedVariants,
+        })
+      ).finally(() => setOpen(false));
+    }
+  };
+
+  const handleSelectedVariants = (name: string, option: string) => {
+    setSelectedVariants((prevVariants) => {
+      const existingVariantIndex = prevVariants.findIndex((variant) => variant.name === name);
+      if (existingVariantIndex !== -1) {
+        const updatedVariants = [...prevVariants];
+        updatedVariants[existingVariantIndex] = { name, option };
+        return updatedVariants;
+      } else {
+        return [...prevVariants, { name, option }];
+      }
+    });
+  };
 
   return (
-    <Drawer>
+    <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button className="mt-2 px-6 py-2 border rounded-full border-rose-500 bg-transparent text-rose-500 w-max hover:bg-rose-600 hover:text-white">
-          Add to Cart
+        <Button className="rounded-full border-orange-500 text-orange-500" variant={"outline"}>
+          Add to cart
         </Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="flex items-start gap-4">
-          <div className="bg-[#e2e2e1] w-1/4 h-[600px] overflow-hidden rounded-md relative cursor-pointer flex justify-center">
-            <img
-              src={item.productImage[0].imageUrl}
-              alt={item.productImage[0].imageId}
-              className="w-full h-[700px] object-cover object-top"
-            />
+          <div className="shrink-0 w-1/4 flex flex-col gap-4">
+            <div className="h-[400px] w-full  rounded-md border flex items-center justify-center">
+              {selectedImage ? (
+                <img
+                  src={selectedImage}
+                  alt="Preview"
+                  className="w-full h-full rounded-md object-cover object-top"
+                />
+              ) : (
+                <Label>No image is chosen.</Label>
+              )}
+            </div>
+
+            <span className="flex flex-wrap items-center gap-2">
+              {item.productImage.map((item, i) => (
+                <img
+                  onClick={() => setSelectedImage(item.imageUrl)}
+                  key={i}
+                  src={item.imageUrl}
+                  alt="Preview"
+                  className={`w-[50px] h-[50px] object-cover object-top rounded-sm ${
+                    selectedImage === item.imageUrl && "border-2 border-orange-500"
+                  }`}
+                />
+              ))}
+            </span>
           </div>
-          <div className=" leading-3 flex flex-col justify-between gap-4">
-            <DrawerTitle className="tracking-wide font-bold text-4xl">{item.name}</DrawerTitle>
+          <div className="w-full leading-3 flex flex-col justify-between gap-4">
+            <Label className="tracking-wide font-bold text-4xl">{item.name}</Label>
             <Separator />
             <div className="flex items-center gap-2">
               <Label className="flex items-center gap-2">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star
                     key={i}
-                    className={`w-5 h-5 text-orange-500 ${
-                      i + 1 <= item.ratings.length && "fill-orange-500"
-                    }`}
+                    className={`w-5 h-5 text-orange-500 ${i + 1 <= 0 && "fill-orange-500"}`}
                   />
                 ))}
               </Label>
@@ -52,40 +103,32 @@ const AddToCartDrawer: React.FC<AddToCartDrawerProps> = ({ item }) => {
               <Label>10 Sold</Label>
             </div>
 
-            <div className="w-full  bg-white-shade p-4 flex items-center">
-              <Label className="text-3xl font-bold text-rose-500">
-                ₱{item.price} - ₱{Number(item.price) + 20}
-              </Label>
+            <div className="w-max  bg-white-shade p-4 flex items-center">
+              <Label className="text-3xl font-bold text-rose-500">₱{item.price}</Label>
             </div>
 
-            <div className="mt-4 flex flex-col gap-2">
-              <Label className="tracking-wide">Colors</Label>
-              <span className="flex flex-wrap gap-2">
-                {variants.colors.map((color, i) => (
-                  <div
-                    key={i}
-                    className={`px-4 py-2 border cursor-pointer hover:bg-white-shade ${
-                      selectedColor === color.name && "border-rose-600 text-rose-600"
-                    }`}
-                    onClick={() => setSelectedColor(color.name)}>
-                    {color.name}
-                  </div>
-                ))}
-              </span>
-              <Label className="mt-2 tracking-wide">Sizes</Label>
-              <span className="flex flex-wrap gap-2">
-                {variants.size.map((size, i) => (
-                  <div
-                    key={i}
-                    className={`px-4 py-2 cursor-pointer hover:bg-white-shade border ${
-                      selectedSize === size.name && "border-rose-600 text-rose-600"
-                    }`}
-                    onClick={() => setSelectedSize(size.name)}>
-                    {size.name}
-                  </div>
-                ))}
-              </span>
-              <Label className="mt-2 tracking-wide">Quantity</Label>
+            {item.variants.map((cat, i) => (
+              <div key={i} className="mt-2 flex flex-col gap-2">
+                <Label className="tracking-widest font-extrabold ">{cat.name}</Label>
+                <span className="flex flex-wrap gap-2">
+                  {cat.options.map((option, idx) => (
+                    <div
+                      key={idx}
+                      className={`w-max px-4 py-2 border cursor-pointer hover:bg-white-shade 
+                      ${
+                        selectedVariants.find(
+                          (variant) => variant.name === cat.name && variant.option === option
+                        ) && "border border-orange-500"
+                      }`}
+                      onClick={() => handleSelectedVariants(cat.name, option)}>
+                      {option}
+                    </div>
+                  ))}
+                </span>
+              </div>
+            ))}
+            <div className="mt-2 flex flex-col gap-2">
+              <Label className="tracking-widest font-extrabold ">quantity</Label>
               <div className="flex items-center w-max">
                 <Button
                   onClick={() => setQuantity((prev) => (prev <= 0 ? (prev = 0) : prev - 1))}
@@ -108,17 +151,29 @@ const AddToCartDrawer: React.FC<AddToCartDrawerProps> = ({ item }) => {
 
             <div className="mt-8 flex items-center gap-4">
               <Button
-                className="flex items-center gap-4 border-2 text-rose-600 border-rose-600 text-lg shadow-md hover:bg-white-shade hover:text-rose-600"
+                disabled={loading}
+                onClick={() => HandleAddToCart(item.id)}
+                className="flex items-center gap-4 border-2 text-orange-600 border-orange-600 text-lg shadow-md hover:bg-white-shade hover:text-orange-600"
                 variant={"outline"}
                 size={"lg"}>
-                Add to Cart <ShoppingBag className="w-6 h-6" />
+                {loading ? (
+                  <>
+                    Adding....
+                    <Loader2 className="animate-spin w-6 h-6" />
+                  </>
+                ) : (
+                  <>
+                    Add to Cart <ShoppingBag className="w-6 h-6" />
+                  </>
+                )}
               </Button>
-              <Button
-                className="flex items-center gap-4 text-white border-2 border-rose-600 bg-rose-600 text-lg shadow-md hover:bg-rose-500 hover:text-white"
-                variant={"outline"}
-                size={"lg"}>
-                Order now <PackageCheck className="w-6 h-6" />
-              </Button>
+              <DrawerClose asChild>
+                <Button
+                  variant={"outline"}
+                  className="flex items-center gap-4 border-2 text-rose-600 border-rose-600 text-lg shadow-md hover:bg-white-shade hover:text-rose-600">
+                  Cancel
+                </Button>
+              </DrawerClose>
             </div>
           </div>
         </DrawerHeader>

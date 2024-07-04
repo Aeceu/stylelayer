@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
@@ -32,10 +32,11 @@ const Login = () => {
     },
   });
 
+  const navigate = useNavigate();
   const { status, error } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
   const onSubmit = async (data: TUserLogin) => {
-    dispatch(handleLogin(data)).finally(() => {
+    dispatch(handleLogin({ email: data.email, password: data.password, navigate })).finally(() => {
       form.reset();
     });
   };

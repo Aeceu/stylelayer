@@ -1,4 +1,4 @@
-import { User2, Search, ChevronRight, Loader2 } from "lucide-react";
+import { User2, Search, ChevronRight, Loader2, PackageCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import Cart from "./Cart";
 import { useSelector } from "react-redux";
@@ -146,13 +146,21 @@ const Navbar = () => {
       </div>
 
       <div className="w-1/4  flex items-center justify-end gap-10">
-        <span className="flex items-center gap-6">
+        <span className="flex items-center gap-4">
           <Cart />
-
+          <div className=" flex items-center gap-2 cursor-pointer ">
+            <span className="relative">
+              <PackageCheck className="w-6 h-6 " />
+              {/* <p className="bg-orange-500 text-white text-sm w-[20px] h-[20px] rounded-full text-center absolute -top-[12px] -right-[12px]">
+                0
+              </p> */}
+            </span>
+            <h1 className="text-sm">Orders</h1>
+          </div>
           {user ? (
-            <div className="relative flex items-center gap-1 bg-white">
+            <div className="shadow-md relative flex items-center gap-1 bg-orange-400 text-white px-4 py-2 rounded-full">
               <User2 className="w-6 h-6" />
-              <h1 className="text-lg">Account</h1>
+              <h1 className="text-lg tracking-widest font-bold">Account</h1>
             </div>
           ) : (
             <div className="relative flex items-center bg-white-shade p-2 gap-1 rounded-full">

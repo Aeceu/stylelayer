@@ -16,6 +16,8 @@ import { ScrollArea } from "./ui/scroll-area";
 import { useEffect, useState } from "react";
 import { TCartItem } from "@/store/types/cart";
 import { getUserCart, handleRemoveFromCart } from "@/store/actions/cartActions";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Cart = () => {
   const { user } = useSelector((state: RootState) => state.user);
@@ -37,20 +39,36 @@ const Cart = () => {
   };
 
   useEffect(() => {
-    if (user?.id) dispatch(getUserCart(user.id));
+    if (user && user.id) dispatch(getUserCart(user.id));
   }, []);
+
+  if (!user) {
+    return (
+      <Link
+        to={"/login"}
+        onClick={() => toast("Login first.")}
+        className=" flex items-center gap-2">
+        <span className="relative">
+          <ShoppingBag className="w-6 h-6" />
+        </span>
+        <h1 className="text-lg">Cart</h1>
+      </Link>
+    );
+  }
 
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <div className=" flex items-center gap-2">
-          <span className="relative">
-            <ShoppingBag className="w-6 h-6" />
-            <p className="bg-red-500 text-white text-sm w-[20px] h-[20px] rounded-full text-center absolute -top-[12px] -right-[12px]">
-              {cart.length}
-            </p>
-          </span>
-          <h1 className="text-lg">Cart</h1>
+        <div className=" flex items-center gap-2 cursor-pointer ">
+          {cart.length > 0 && (
+            <span className="relative">
+              <ShoppingBag className="w-6 h-6" />
+              <p className="bg-orange-500 text-white text-sm w-[20px] h-[20px] rounded-full text-center absolute -top-[12px] -right-[12px]">
+                {cart.length}
+              </p>
+            </span>
+          )}
+          <h1 className="text-sm">Cart</h1>
         </div>
       </SheetTrigger>
 
@@ -94,7 +112,7 @@ const Cart = () => {
                 </div>
                 <span className="p-2 w-full h-full flex flex-col justify-start gap-1">
                   <Label className="text-black text-sm">
-                    Price: ₱{" "}
+                    Total Price: ₱{" "}
                     {(
                       parseInt(cartItem.product.price) * parseInt(cartItem.quantity)
                     ).toLocaleString()}

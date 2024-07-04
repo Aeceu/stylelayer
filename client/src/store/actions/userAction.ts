@@ -11,13 +11,21 @@ export const handleSignup = createAsyncThunk(
       firstName,
       lastName,
       password,
-    }: { email: string; password: string; firstName: string; lastName: string },
+      navigate,
+    }: {
+      email: string;
+      password: string;
+      firstName: string;
+      lastName: string;
+      navigate: (path: string) => void;
+    },
     { rejectWithValue }
   ) => {
     try {
       const res = await axios.post("/signup", { email, password, firstName, lastName });
       console.log(res.data);
       toast.success(res.data.message);
+      navigate("/login");
       return res.data;
     } catch (error) {
       console.log(error);
@@ -29,7 +37,14 @@ export const handleSignup = createAsyncThunk(
 
 export const handleLogin = createAsyncThunk(
   "user/handleLogin",
-  async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
+  async (
+    {
+      email,
+      password,
+      navigate,
+    }: { email: string; password: string; navigate: (path: string) => void },
+    { rejectWithValue }
+  ) => {
     try {
       const res = await axios.post(
         "/login",
@@ -40,6 +55,7 @@ export const handleLogin = createAsyncThunk(
       );
       console.log(res.data);
       toast.success(res.data.message);
+      navigate("/");
       return res.data;
     } catch (error) {
       console.log(error);
