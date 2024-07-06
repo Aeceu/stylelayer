@@ -72,6 +72,7 @@ export const handleRefresh = createAsyncThunk(
       const res = await axios.get("/refresh", {
         withCredentials: true,
       });
+      console.log(res.data);
       return res.data;
     } catch (error) {
       console.log(error);

@@ -3,18 +3,24 @@ import { z } from "zod";
 
 export type TUser = {
   id: string;
+
+  username?: string;
   firstName: string;
   lastName: string;
 
-  email: string;
+  age?: string;
   phone?: string;
+  email: string;
 
   country?: string;
   region?: string;
   city?: string;
   baranggay?: string;
   street?: string;
-  others?: string;
+  other?: string;
+
+  profilePicId?: string;
+  profilePicUrl?: string;
 
   createdAt: string;
   updatedAt: string;

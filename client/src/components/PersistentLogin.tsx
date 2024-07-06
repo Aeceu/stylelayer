@@ -17,7 +17,7 @@ const PersistentLogin = () => {
     <>
       {pageLoading ? (
         <div className="flex items-center justify-center w-full h-screen">
-          <Loader2 className="animate-spin w-10 h-10" />
+          <Loader2 className="text-blue-500 animate-spin w-10 h-10" />
         </div>
       ) : (
         <Outlet />

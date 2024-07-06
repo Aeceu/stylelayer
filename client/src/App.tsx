@@ -6,6 +6,8 @@ import Products from "./pages/Products";
 import PersistentLogin from "./components/PersistentLogin";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Profile from "./pages/Profile";
+import ProfileLayout from "./ProfileLayout";
 
 const App = () => {
   return (
@@ -15,6 +17,10 @@ const App = () => {
           <Route index element={<Home />} />
           <Route path="product?" element={<Product />} />
           <Route path="products?" element={<Products />} />
+
+          <Route path="profile" element={<ProfileLayout />}>
+            <Route index element={<Profile />} />
+          </Route>
         </Route>
       </Route>
       <Route path="/login" element={<Login />} />

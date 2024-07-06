@@ -20,8 +20,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Logout from "./Logout";
@@ -197,11 +195,17 @@ const Navbar = () => {
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Addresses</DropdownMenuItem>
-                <DropdownMenuItem>Billing</DropdownMenuItem>
-                <DropdownMenuItem>Team</DropdownMenuItem>
+                <DropdownMenuItem className="p-0">
+                  <Link to={"/profile"} className="w-full h-full p-2">
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link to={"/"}>Address</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link to={"/"}>Settings</Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Logout />
                 </DropdownMenuItem>
