@@ -119,7 +119,7 @@ export const logout = async (req: Request, res: Response) => {
 
     if (!foundUser) {
       res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: true });
-      return res.sendStatus(204);
+      return res.status(204).json({ message: "Successfully logout!" });
     }
 
     await prisma.user.update({
@@ -131,7 +131,7 @@ export const logout = async (req: Request, res: Response) => {
       },
     });
     res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: true });
-    res.sendStatus(204);
+    res.status(204).json({ message: "Successfully logout!" });
   } catch (error) {
     console.log(error);
     res.status(500).json({

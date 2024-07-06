@@ -1,5 +1,5 @@
 import { User2, Search, ChevronRight, Loader2, PackageCheck } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Cart from "./Cart";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
@@ -16,15 +16,27 @@ import { Label } from "./ui/label";
 import { fetchSearchProduct, getCategories } from "@/store/actions/productActions";
 import { Link } from "react-router-dom";
 import { TProduct } from "@/store/types/product";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import Logout from "./Logout";
 
 const Navbar = () => {
   const { user } = useSelector((state: RootState) => state.user);
   const [isActive, setIsActive] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [categories, setCategories] = useState<{ category: string }[]>([]);
 
   const [searchLoading, setSearchLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState<TProduct[] | null>(null);
+
+  const formRef = useRef<HTMLFormElement | null>(null);
 
   useEffect(() => {
     getCategories().then((res) => {
@@ -55,6 +67,21 @@ const Navbar = () => {
     }
   }, [search]);
 
+  useEffect(() => {
+    const handleBlur = (event: MouseEvent) => {
+      if (formRef.current && formRef.current.contains(event.target as Node)) {
+        setIsActive(true);
+      } else {
+        clearSearch();
+      }
+    };
+
+    document.addEventListener("click", handleBlur);
+    return () => {
+      document.removeEventListener("click", handleBlur);
+    };
+  }, []);
+
   const clearSearch = () => {
     setSearch("");
     setSearchResult(null);
@@ -69,7 +96,7 @@ const Navbar = () => {
       </Link>
 
       <div
-        className={`relative w-1/2 flex items-center ${
+        className={` w-1/2 flex items-center ${
           isActive ? "justify-end" : "justify-between"
         } gap-4`}>
         {!isActive && (
@@ -117,9 +144,9 @@ const Navbar = () => {
         )}
 
         <form
+          ref={formRef}
           onFocus={() => setIsActive(true)}
-          onBlur={clearSearch}
-          className=" w-full bg-white-shade rounded-full flex items-center justify-between px-2">
+          className="relative w-full bg-white-shade rounded-full flex items-center justify-between px-2">
           <input
             type="text"
             value={search}
@@ -128,21 +155,25 @@ const Navbar = () => {
             placeholder="Search product"
           />
           <Search className="w-8 h-8 mr-2" />
+          {searchResult && (
+            <div className="bg-white border rounded-md p-2 w-full absolute top-16 left-0 z-10 flex flex-col items-center gap-2">
+              {searchLoading && <Loader2 className="animate-spin w-8 h-8 text-center my-2" />}
+              {searchResult.length > 0 ? (
+                searchResult.map((item, i) => (
+                  <Link
+                    onClick={clearSearch}
+                    to={`/product?id=${item.id}`}
+                    key={i}
+                    className="z-20 w-full  font-extrabold tracking-widest p-2 rounded-lg hover:bg-white-shade">
+                    {item.name}
+                  </Link>
+                ))
+              ) : (
+                <Label className="text-center">No item available.</Label>
+              )}
+            </div>
+          )}
         </form>
-        {searchResult && (
-          <ul className="bg-white border rounded-md p-2 w-full absolute top-16 left-0 z-10 flex flex-col items-center gap-2">
-            {searchLoading && <Loader2 className="animate-spin w-8 h-8 text-center my-2" />}
-            {searchResult.length > 0 ? (
-              searchResult.map((item, i) => (
-                <li key={i} className="w-full  font-extrabold tracking-widest">
-                  {item.name}
-                </li>
-              ))
-            ) : (
-              <Label className="text-center">No item available.</Label>
-            )}
-          </ul>
-        )}
       </div>
 
       <div className="w-1/4  flex items-center justify-end gap-10">
@@ -158,10 +189,24 @@ const Navbar = () => {
             <h1 className="text-sm">Orders</h1>
           </div>
           {user ? (
-            <div className="shadow-md relative flex items-center gap-1 bg-orange-400 text-white px-4 py-2 rounded-full">
-              <User2 className="w-6 h-6" />
-              <h1 className="text-lg tracking-widest font-bold">Account</h1>
-            </div>
+            <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+              <DropdownMenuTrigger asChild>
+                <div className="shadow-md relative flex items-center gap-1 bg-orange-400 text-white px-4 py-2 rounded-full">
+                  <User2 className="w-6 h-6" />
+                  <h1 className="text-lg tracking-widest font-bold">Account</h1>
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Addresses</DropdownMenuItem>
+                <DropdownMenuItem>Billing</DropdownMenuItem>
+                <DropdownMenuItem>Team</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Logout />
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <div className="relative flex items-center bg-white-shade p-2 gap-1 rounded-full">
               <Link

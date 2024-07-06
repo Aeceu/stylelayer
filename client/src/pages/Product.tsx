@@ -51,7 +51,7 @@ const Product = () => {
       }
     };
     fetchProduct();
-  }, []);
+  }, [itemId]);
 
   const handleSelectedVariants = (name: string, option: string) => {
     setSelectedVariants((prevVariants) => {

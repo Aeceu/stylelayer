@@ -89,7 +89,7 @@ export const handleLogout = createAsyncThunk(
         withCredentials: true,
       });
       console.log(res.data);
-      toast.success(res.data.message);
+      toast.success("Log out successfully!");
       return res.data;
     } catch (error) {
       console.log(error);
