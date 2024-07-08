@@ -1,7 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TUser } from "../types/user";
-import { handleLogin, handleLogout, handleRefresh, handleSignup } from "../actions/userAction";
+import {
+  handleLogin,
+  handleLogout,
+  handleRefresh,
+  handleSignup,
+  handleUpdateUser,
+  handleUpdateUserProfile,
+} from "../actions/userAction";
 
 type TInitialState = {
   user: TUser | null;
@@ -70,16 +77,22 @@ const userSlice = createSlice({
       .addCase(handleRefresh.rejected, (state) => {
         state.pageLoading = false;
       })
-      .addCase(handleLogout.pending, (state) => {
-        state.status = "pending";
-      })
       .addCase(handleLogout.fulfilled, (state) => {
-        state.status = "completed";
         state.user = null;
         state.accessToken = "";
       })
-      .addCase(handleLogout.rejected, (state) => {
+      .addCase(handleUpdateUser.pending, (state) => {
+        state.status = "pending";
+      })
+      .addCase(handleUpdateUser.fulfilled, (state, action) => {
+        state.status = "completed";
+        state.user = action.payload.user;
+      })
+      .addCase(handleUpdateUser.rejected, (state) => {
         state.status = "failed";
+      })
+      .addCase(handleUpdateUserProfile.fulfilled, (state, action) => {
+        state.user = action.payload.user;
       });
   },
 });

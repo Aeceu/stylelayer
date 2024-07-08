@@ -99,3 +99,44 @@ export const handleLogout = createAsyncThunk(
     }
   }
 );
+
+type handleUpdateUserProps = {
+  user: string | undefined;
+  data: {
+    firstName: string | undefined;
+    lastName: string | undefined;
+    email: string | undefined;
+    username: string | undefined;
+    phone: string | undefined;
+    age: string | undefined;
+  };
+};
+
+export const handleUpdateUser = createAsyncThunk(
+  "user/handleUpdateUser",
+  async ({ data, user }: handleUpdateUserProps, { rejectWithValue }) => {
+    try {
+      const res = await axios.patch(`/user/${user}`, data);
+      toast.success(res.data.message);
+      return res.data;
+    } catch (error) {
+      const apiError = handleAPIerror(error);
+      return rejectWithValue(apiError);
+    }
+  }
+);
+
+export const handleUpdateUserProfile = createAsyncThunk(
+  "user/handleUpdateUserProfile",
+  async ({ image, userId }: { userId: string | undefined; image: string }, { rejectWithValue }) => {
+    try {
+      const res = await axios.patch(`/user/image/${userId}`, { data: image });
+      toast.success(res.data.message);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+      const apiError = handleAPIerror(error);
+      return rejectWithValue(apiError);
+    }
+  }
+);

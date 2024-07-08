@@ -169,10 +169,30 @@ export const refresh = async (req: Request, res: Response) => {
 
 export const updateUserProfilePicture = async (req: Request, res: Response) => {
   try {
-    const { image } = req.body;
+    const { data } = req.body;
     const userId = req.params.userId;
 
-    const result = await cloudinary.uploader.upload(image, {
+    const user = await prisma.user.findFirst({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (user?.profilePicId && user.profilePicUrl) {
+      await cloudinary.uploader.destroy(user.profilePicId);
+    }
+
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        profilePicId: "",
+        profilePicUrl: "",
+      },
+    });
+
+    const result = await cloudinary.uploader.upload(data, {
       folder: "stylelayer/userImage",
       transformation: [{ quality: "auto" }],
     });
