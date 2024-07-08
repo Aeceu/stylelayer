@@ -78,7 +78,7 @@ const Cart = () => {
             Shopping Cart
           </SheetTitle>
           <SheetDescription>
-            Make changes to your profile here. Click save when you're done.
+            Make changes to your cart here. Click checkout when you want to order your cart item.
           </SheetDescription>
         </SheetHeader>
         <ScrollArea className="h-full bg-white-shade flex flex-col items-center justify-center gap-2 p-2 ">

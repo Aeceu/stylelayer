@@ -89,7 +89,7 @@ const Navbar = () => {
 
   return (
     <nav className="w-full h-[100px] border-b border-foreground/10  flex items-center justify-between  px-8 gap-8">
-      <Link to={"/"} className={`w-1/4 text-5xl  title`}>
+      <Link to={"/"} className={`w-1/4 text-5xl title`}>
         StyleLayer Co.
       </Link>
 
