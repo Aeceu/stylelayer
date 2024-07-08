@@ -8,6 +8,8 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
 import ProfileLayout from "./ProfileLayout";
+import Settings from "./pages/Settings";
+import Address from "./pages/Address";
 
 const App = () => {
   return (
@@ -20,6 +22,8 @@ const App = () => {
 
           <Route path="profile" element={<ProfileLayout />}>
             <Route index element={<Profile />} />
+            <Route path="address" element={<Address />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
         </Route>
       </Route>

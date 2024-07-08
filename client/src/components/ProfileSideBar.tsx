@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import { BookUser, LayoutPanelLeft, Loader2, Pencil, Settings } from "lucide-react";
 import { Separator } from "./ui/separator";
 import Logout from "./Logout";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { handleFile } from "@/lib/HandleFile";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -62,39 +62,42 @@ const ProfileSideBar = () => {
       </div>
 
       <div className="w-full h-full flex flex-col gap-4">
-        <div
-          className={`flex items-center gap-2  rounded-xl p-4 ${
+        <Link
+          to="/profile"
+          className={`flex items-center gap-2  rounded-xl p-4 hover:bg-white-shade-light ${
             params.pathname === "/profile" && "bg-white-shade-light"
           }`}>
           <LayoutPanelLeft
             className={`w-7 h-7 ${params.pathname === "/profile" && "text-orange-500"}`}
           />
           <Label className="text-lg tracking-wider">General Information</Label>
-        </div>
+        </Link>
 
         <Separator />
 
-        <div
-          className={`flex items-center gap-2  rounded-xl p-4 ${
+        <Link
+          to={"/profile/address"}
+          className={`flex items-center gap-2  rounded-xl p-4 hover:bg-white-shade-light ${
             params.pathname === "/profile/address" && "bg-white-shade-light"
           }`}>
           <BookUser
             className={`w-7 h-7 ${params.pathname === "/profile/address" && "text-orange-500"}`}
           />
           <Label className="text-lg tracking-wider">Address</Label>
-        </div>
+        </Link>
 
         <Separator />
 
-        <div
-          className={`flex items-center gap-2  rounded-xl p-4 ${
+        <Link
+          to={"/profile/settings"}
+          className={`flex items-center gap-2  rounded-xl p-4 hover:bg-white-shade-light ${
             params.pathname === "/profile/settings" && "bg-white-shade-light"
           }`}>
           <Settings
             className={`w-7 h-7 ${params.pathname === "/profile/settings" && "text-orange-500"}`}
           />
           <Label className="text-lg tracking-wider">Settings</Label>
-        </div>
+        </Link>
       </div>
 
       <div className="w-full">

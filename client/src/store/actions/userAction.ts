@@ -102,14 +102,23 @@ export const handleLogout = createAsyncThunk(
 
 type handleUpdateUserProps = {
   user: string | undefined;
-  data: {
-    firstName: string | undefined;
-    lastName: string | undefined;
-    email: string | undefined;
-    username: string | undefined;
-    phone: string | undefined;
-    age: string | undefined;
-  };
+  data:
+    | {
+        firstName: string | undefined;
+        lastName: string | undefined;
+        email: string | undefined;
+        username: string | undefined;
+        phone: string | undefined;
+        age: string | undefined;
+      }
+    | {
+        region: string | undefined;
+        province: string | undefined;
+        city: string | undefined;
+        baranggay: string | undefined;
+        street: string | undefined;
+        other: string | undefined;
+      };
 };
 
 export const handleUpdateUser = createAsyncThunk(
