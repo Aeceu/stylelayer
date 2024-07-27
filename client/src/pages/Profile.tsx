@@ -41,7 +41,13 @@ const Profile = () => {
   return (
     <div className="w-full p-4">
       <div className="h-full flex flex-col  justify-between bg-white-shade rounded-xl p-4 gap-4">
-        <Label className="font-bold text-2xl tracking-wide">General Information</Label>
+        {updateInfo ? (
+          <Label className="font-bold text-2xl tracking-wide">General Information</Label>
+        ) : (
+          <Label className="font-bold text-2xl tracking-wide text-red-500">
+            Updating Information....
+          </Label>
+        )}
         <div className="h-full grid grid-cols-2 place-content-start gap-4">
           <span className="space-y-2 ">
             <Label className="text-muted-foreground font-bold tracking-wide ">First Name:</Label>

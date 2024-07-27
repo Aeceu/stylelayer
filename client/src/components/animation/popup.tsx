@@ -6,9 +6,10 @@ interface Props {
   children: React.ReactNode;
   className?: string;
   delay?: number;
+  duration?: number;
 }
 
-const Popup = ({ delay, children, className }: Props) => {
+const Popup = ({ delay, duration, children, className }: Props) => {
   const ref = useRef(null);
   const isInView = useInView(ref);
   const mainControls = useAnimation();
@@ -25,7 +26,10 @@ const Popup = ({ delay, children, className }: Props) => {
       className={className}
       variants={{
         hidden: { scale: 0 },
-        visible: { scale: 1, transition: { delay: delay ? delay : 0.2 } },
+        visible: {
+          scale: 1,
+          transition: { delay: delay ? delay : 0.2, duration: duration && duration },
+        },
       }}
       initial="hidden"
       animate={mainControls}>

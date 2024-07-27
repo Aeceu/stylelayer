@@ -20,6 +20,14 @@ const Sidebar = () => {
           Home
         </Link>
         <Link
+          to={"/orders?page=1&pageSize=10"}
+          className={`p-4 tracking-widest flex items-center gap-4 ${
+            params.pathname === "/orders" && "bg-[#222222] rounded-xl "
+          }`}>
+          <img src="./product.svg" alt="home" className="h-6 w-6" />
+          Orders
+        </Link>
+        <Link
           to={"/products?page=1&pageSize=10"}
           className={`p-4 tracking-widest flex items-center gap-4 ${
             params.pathname === "/products" && "bg-[#222222] rounded-xl "

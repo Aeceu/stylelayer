@@ -59,10 +59,7 @@ const Products = () => {
         </TableHeader>
         <TableBody>
           {products.map((item, i) => (
-            <TableRow
-              onClick={() => nav(`/product?id=${item.id}`)}
-              key={i}
-              className="hover:bg-[#222222] cursor-pointer divide-x-2">
+            <TableRow key={i} className="hover:bg-[#222222] cursor-pointer divide-x-2">
               <TableCell className="p-1 w-[100px] h-[70px]">
                 <img
                   src={item.productImage[0].imageUrl}

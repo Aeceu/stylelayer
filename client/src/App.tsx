@@ -1,15 +1,20 @@
 import { Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
+import PersistentLogin from "./components/PersistentLogin";
+
 import Layout from "./Layout";
+import Home from "./pages/Home";
+import Orders from "./pages/Orders";
 import Product from "./pages/Product";
 import Products from "./pages/Products";
-import PersistentLogin from "./components/PersistentLogin";
+
+import ProfileLayout from "./ProfileLayout";
+import Profile from "./pages/Profile";
+import Address from "./pages/Address";
+import Settings from "./pages/Settings";
+
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Profile from "./pages/Profile";
-import ProfileLayout from "./ProfileLayout";
-import Settings from "./pages/Settings";
-import Address from "./pages/Address";
+import Order from "./pages/Order";
 
 const App = () => {
   return (
@@ -19,6 +24,8 @@ const App = () => {
           <Route index element={<Home />} />
           <Route path="product?" element={<Product />} />
           <Route path="products?" element={<Products />} />
+          <Route path="order?" element={<Order />} />
+          <Route path="orders" element={<Orders />} />
 
           <Route path="profile" element={<ProfileLayout />}>
             <Route index element={<Profile />} />

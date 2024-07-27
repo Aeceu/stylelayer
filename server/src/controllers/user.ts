@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
-import prisma from "../utils/prisma";
-import exclude from "../utils/exclude";
-import { TLogin, TSignup } from "../types/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import prisma from "../utils/prisma";
+import exclude from "../utils/exclude";
+import { Request, Response } from "express";
 import cloudinary from "../utils/cloudinary";
+import { TLogin, TSignup } from "../types/user";
 
 export const signup = async (req: Request, res: Response) => {
   const { email, password, firstName, lastName }: TSignup = req.body;
@@ -262,6 +262,42 @@ export const deleteUserAccount = async (req: Request, res: Response) => {
     console.log(error);
     res.status(500).json({
       message: "Failed to delete your account!",
+      error: error,
+    });
+  }
+};
+
+export const changeUserPassword = async (req: Request, res: Response) => {
+  try {
+    const { oldPass, newPass } = req.body;
+    const userId = req.params.userId;
+
+    const user = await prisma.user.findFirst({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const validPass = await bcrypt.compare(oldPass, user.password);
+
+    if (!validPass) return res.status(403).json("Old Password incorrect!");
+
+    const newPassHash = await bcrypt.hash(newPass, 12);
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        password: newPassHash,
+      },
+    });
+
+    res.status(200).json({ message: "Password change successfully!" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Failed to change password!",
       error: error,
     });
   }

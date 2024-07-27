@@ -55,7 +55,7 @@ const Products = () => {
 
   return (
     <div className="w-full flex flex-col justify-center items-center  p-8">
-      <div className="w-max min-h-[600px] grid grid-cols-4 gap-4 ">
+      <div className="w-max min-h-[600px] grid-cols-1 grid md:grid-cols-2 lg:grid-cols-4 gap-4 ">
         {products.map((item, i) => (
           <ProductCard item={item} key={i} />
         ))}

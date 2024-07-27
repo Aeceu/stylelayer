@@ -8,6 +8,8 @@ import { TProduct } from "@/store/types/product";
 import { AppDispatch, RootState } from "@/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { handleAddToCart } from "@/store/actions/cartActions";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 type AddToCartDrawerProps = {
   item: TProduct;
@@ -22,18 +24,23 @@ const AddToCartDrawer: React.FC<AddToCartDrawerProps> = ({ item }) => {
   const { user } = useSelector((state: RootState) => state.user);
   const { loading } = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   const HandleAddToCart = (itemId: string) => {
-    if (user) {
-      dispatch(
-        handleAddToCart({
-          productId: itemId,
-          quantity,
-          userId: user.id,
-          variants: selectedVariants,
-        })
-      ).finally(() => setOpen(false));
+    if (!user) {
+      toast.error("Please login first.");
+      navigate("/login");
+      return;
     }
+
+    dispatch(
+      handleAddToCart({
+        productId: itemId,
+        quantity,
+        userId: user.id,
+        variants: selectedVariants,
+      })
+    ).finally(() => setOpen(false));
   };
 
   const handleSelectedVariants = (name: string, option: string) => {

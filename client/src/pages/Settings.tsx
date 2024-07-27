@@ -50,7 +50,7 @@ const Settings = () => {
             <Label className="text-xs tracking-widest">Confirm new password</Label>
             <Input
               type="text"
-              placeholder="Re-type your current password here..."
+              placeholder="Re-type your new password here..."
               className="border-black"
               value={retypenewPass}
               onChange={(e) => setRetypeNewPass(e.target.value)}

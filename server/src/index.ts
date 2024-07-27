@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 
 import user from "./routes/user";
 import cart from "./routes/cart";
+import order from "./routes/order";
 import product from "./routes/product";
 
 dotenv.config();
@@ -32,6 +33,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 app.use("/api/v1", user);
 app.use("/api/v1", cart);
+app.use("/api/v1", order);
 app.use("/api/v1", product);
 
 const PORT = 4200;

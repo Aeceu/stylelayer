@@ -18,10 +18,12 @@ import { TCartItem } from "@/store/types/cart";
 import { getUserCart, handleRemoveFromCart } from "@/store/actions/cartActions";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { handleCreateOrder } from "@/store/actions/orderAction";
 
 const Cart = () => {
   const { user } = useSelector((state: RootState) => state.user);
   const { cart } = useSelector((state: RootState) => state.cart);
+  const { orderStatus } = useSelector((state: RootState) => state.order);
   const dispatch = useDispatch<AppDispatch>();
   const [selectedCartItems, setSelectedCartItems] = useState<TCartItem[]>([]);
   const [totalCheckoutPrice, setTotalCheckoutPrice] = useState(0);
@@ -36,6 +38,27 @@ const Cart = () => {
     setSelectedCartItems(selectedCartItems.filter((item) => item.id !== cartItem.id));
     const itemPrice = parseInt(cartItem.product.price) * parseInt(cartItem.quantity);
     setTotalCheckoutPrice((prev) => prev - itemPrice);
+  };
+
+  const handleCheckOut = async () => {
+    if (user && user.region && user.baranggay && user.street) {
+      dispatch(
+        handleCreateOrder({
+          userId: user.id,
+          address: {
+            region: user.region,
+            city: user.city || "",
+            province: user.province || "",
+            baranggay: user.baranggay,
+            street: user.street,
+            other: user.other || "",
+          },
+          cartItem: selectedCartItems,
+        })
+      );
+    } else {
+      toast.error("Address is required!");
+    }
   };
 
   useEffect(() => {
@@ -81,11 +104,11 @@ const Cart = () => {
             Make changes to your cart here. Click checkout when you want to order your cart item.
           </SheetDescription>
         </SheetHeader>
-        <ScrollArea className="h-full bg-white-shade flex flex-col items-center justify-center gap-2 p-2 ">
+        <ScrollArea className="h-full bg-white-shade flex flex-col items-center justify-center  px-4 ">
           {cart.map((cartItem: TCartItem, i) => (
             <div
               key={i}
-              className="w-full h-full bg-white flex flex-col border-y shadow-md rounded-md ">
+              className="w-full h-full bg-white flex flex-col  shadow-md rounded-md my-4 border">
               <div className="py-1 px-2 border-b  flex items-center gap-2">
                 <Checkbox
                   onCheckedChange={(prev) => {
@@ -147,8 +170,12 @@ const Cart = () => {
             </Label>
           </span>
           <span className="w-max flex items-center gap-2">
-            <Button size="sm" className="bg-orange-500 text-white text-xs">
-              Check out
+            <Button
+              disabled={orderStatus === "pending"}
+              onClick={handleCheckOut}
+              size="sm"
+              className="bg-orange-500 text-white text-xs">
+              {orderStatus === "pending" ? "Checking out...." : "Check out"}
             </Button>
           </span>
         </div>
