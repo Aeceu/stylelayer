@@ -109,7 +109,7 @@ const Cart = () => {
             <div
               key={i}
               className="w-full h-full bg-white flex flex-col  shadow-md rounded-md my-4 border">
-              <div className="py-1 px-2 border-b  flex items-center gap-2">
+              <div className="py-1 px-2 border-b  flex items-center gap-2 border-b">
                 <Checkbox
                   onCheckedChange={(prev) => {
                     if (prev) {

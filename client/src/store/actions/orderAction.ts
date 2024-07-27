@@ -43,3 +43,21 @@ export const handleGetOrderById = createAsyncThunk(
     }
   }
 );
+
+type THandleGetOrderByStatus = {
+  userId: string;
+  status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELED";
+};
+
+export const HandleGetOrderByStatus = createAsyncThunk(
+  "order/HandleGetOrderByStatus",
+  async ({ status, userId }: THandleGetOrderByStatus, { rejectWithValue }) => {
+    try {
+      const res = await axios.post(`/order/status/${userId}`, { status });
+      return res.data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error);
+    }
+  }
+);

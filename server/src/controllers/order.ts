@@ -54,37 +54,67 @@ export const createOrder = async (req: Request, res: Response) => {
       .map((item) => parseFloat(item.product.price) * parseFloat(item.quantity))
       .reduce((partial, val) => partial + val, 0);
 
-    const newOrder = await prisma.order.create({
-      data: {
-        userId,
-        status: "PENDING",
-        totalAmount,
+    const newOrder = await prisma.$transaction(async (prisma) => {
+      // Create the new order
+      const order = await prisma.order.create({
+        data: {
+          userId,
+          status: "PENDING",
+          totalAmount,
 
-        trackingInfo: {
-          create: {
-            currentStatus: "preparing your package",
-            location: "Pasig City",
+          trackingInfo: {
+            create: {
+              currentStatus: "preparing your package",
+              location: "Pasig City",
+            },
           },
-        },
-        orderItems: {
-          createMany: {
-            data: cartItem.map((item) => ({
-              productId: item.product.id,
-              quantity: Number(item.quantity),
-              variants: item.variants,
-            })),
+          orderItems: {
+            createMany: {
+              data: cartItem.map((item) => ({
+                productId: item.product.id,
+                quantity: Number(item.quantity),
+                variants: item.variants,
+              })),
+            },
           },
+          region: address.region,
+          province: address.province,
+          city: address.city,
+          baranggay: address.baranggay,
+          street: address.street,
+          other: address.other,
         },
-        region: address.region,
-        province: address.province,
-        city: address.city,
-        baranggay: address.baranggay,
-        street: address.street,
-        other: address.other,
-      },
+      });
+
+      // Update the product quantities
+      await Promise.all(
+        cartItem.map((item) =>
+          prisma.product.update({
+            where: {
+              id: item.product.id,
+            },
+            data: {
+              stock: {
+                decrement: Number(item.quantity),
+              },
+            },
+          })
+        )
+      );
+
+      // Delete cart items
+      await Promise.all(
+        cartItem.map((item) =>
+          prisma.cartItem.delete({
+            where: {
+              id: item.id,
+            },
+          })
+        )
+      );
+
+      return order;
     });
-
-    await Promise.all(cartItem.map((item) => prisma.cartItem.delete({ where: { id: item.id } })));
 
     res.status(200).json({
       message: "Order successfully!",
@@ -215,6 +245,38 @@ export const getOrders = async (req: Request, res: Response) => {
     console.log(error);
     res.status(500).json({
       message: "Failed to get all orders",
+    });
+  }
+};
+
+export const getOrderByStatus = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.userId;
+    const { status } = req.body;
+    const orderByStatus = await prisma.order.findMany({
+      where: {
+        status,
+        userId,
+      },
+      include: {
+        trackingInfo: true,
+        orderItems: {
+          include: {
+            product: {
+              include: {
+                productImage: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    res.status(200).json(orderByStatus);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Failed to get pending orders",
+      error,
     });
   }
 };

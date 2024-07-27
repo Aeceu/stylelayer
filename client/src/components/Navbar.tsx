@@ -131,21 +131,6 @@ const Navbar = () => {
                   <Label className="text-lg font-semibold">Browse</Label>
                 </NavigationMenuLink>
               </NavigationMenuItem>
-              <NavigationMenuItem className="hidden lg:flex">
-                <NavigationMenuLink href="/" className={navigationMenuTriggerStyle()}>
-                  <Label className="text-lg font-semibold">Deals</Label>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem className="hidden lg:flex">
-                <NavigationMenuLink href="/" className={navigationMenuTriggerStyle()}>
-                  <Label className="text-lg font-semibold">What&apos;s new</Label>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem className="hidden lg:flex">
-                <NavigationMenuLink href="/" className={navigationMenuTriggerStyle()}>
-                  <Label className="text-lg font-semibold">FAQs</Label>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
         )}
