@@ -171,7 +171,9 @@ const Navbar = () => {
       <div className="shrink-0 w-1/4  hidden lg:flex items-center justify-end gap-10">
         <span className="flex items-center gap-4">
           <Cart />
-          <Link to={"/orders"} className=" flex items-center gap-2 cursor-pointer ">
+          <Link
+            to={user ? "/orders" : "/login"}
+            className=" flex items-center gap-2 cursor-pointer ">
             <span className="relative">
               <PackageCheck className="w-6 h-6 " />
               {/* <p className="bg-orange-500 text-white text-sm w-[20px] h-[20px] rounded-full text-center absolute -top-[12px] -right-[12px]">

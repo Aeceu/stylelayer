@@ -225,22 +225,61 @@ export const getOrderById = async (req: Request, res: Response) => {
 };
 
 export const getOrders = async (req: Request, res: Response) => {
+  const page = parseInt(req.query.page as string) || 1;
+  const pageSize = parseInt(req.query.pageSize as string) || 10;
+  const status = req.query.status as
+    | "PENDING"
+    | "PROCESSING"
+    | "SHIPPED"
+    | "DELIVERED"
+    | "CANCELLED"
+    | "ALL";
   try {
-    const orders = await prisma.order.findMany({
-      include: {
-        orderItems: {
-          include: {
-            product: {
-              include: {
-                productImage: true,
+    let orders;
+    let totalOrders;
+    let totalPages;
+
+    if (status && status !== "ALL") {
+      orders = await prisma.order.findMany({
+        where: {
+          status,
+        },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        include: {
+          orderItems: {
+            include: {
+              product: {
+                include: {
+                  productImage: true,
+                },
               },
             },
           },
+          trackingInfo: true,
         },
-        trackingInfo: true,
-      },
-    });
-    res.status(200).json(orders);
+      });
+    } else {
+      orders = await prisma.order.findMany({
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        include: {
+          orderItems: {
+            include: {
+              product: {
+                include: {
+                  productImage: true,
+                },
+              },
+            },
+          },
+          trackingInfo: true,
+        },
+      });
+    }
+    totalOrders = await prisma.product.count();
+    totalPages = Math.ceil(totalOrders / pageSize);
+    res.status(200).json({ orders, totalOrders, currentPage: page });
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -277,6 +316,42 @@ export const getOrderByStatus = async (req: Request, res: Response) => {
     res.status(500).json({
       message: "Failed to get pending orders",
       error,
+    });
+  }
+};
+
+export const updateOrderStatus = async (req: Request, res: Response) => {
+  try {
+    const orderId = req.params.orderId;
+    const { status } = req.body;
+    const order = await prisma.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        status,
+      },
+      include: {
+        trackingInfo: true,
+        orderItems: {
+          include: {
+            product: {
+              include: {
+                productImage: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    res.status(200).json({
+      message: "Order updated successfully!",
+      updatedOrder: order,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Failed to update order!",
     });
   }
 };

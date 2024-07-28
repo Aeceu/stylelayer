@@ -17,14 +17,13 @@ import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import { TProduct } from "@/types/product";
 import axios from "@/api/axios";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 const Products = () => {
   const [searchParams] = useSearchParams();
   const page = searchParams.get("page") || "1";
   const pageSize = searchParams.get("pageSize") || "10";
   const [products, setProducts] = useState<TProduct[]>([]);
-  const nav = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
