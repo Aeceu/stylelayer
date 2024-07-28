@@ -1,4 +1,4 @@
 import axios from "axios";
 export default axios.create({
-  baseURL: "https://stylelayer-jqc5.vercel.app/api/v1",
+  baseURL: "https://serverstylelayer-kaneki081s-projects.vercel.app/api/v1",
 });
