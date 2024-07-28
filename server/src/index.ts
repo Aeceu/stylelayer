@@ -22,15 +22,6 @@ app.use(
     credentials: true,
   })
 );
-app.use((req: Request, res: Response, next: NextFunction) => {
-  const origin = req.headers.origin;
-  if (!origin) return res.sendStatus(403);
-  if (allowedOrigin.includes(origin)) {
-    res.header("Access-Control-Allow-Credentials", "true");
-  }
-
-  next();
-});
 
 app.use("/api/v1", user);
 app.use("/api/v1", cart);
