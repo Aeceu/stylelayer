@@ -11,7 +11,7 @@ import product from "./routes/product";
 
 dotenv.config();
 const app = express();
-const allowedOrigin = ["https://styleLayer.vercel.app", "https://admin.stylelater.vercel.app"];
+const allowedOrigin = ["https://stylelayer.vercel.app", "https://admin.stylelayer.vercel.app"];
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(express.json());
