@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/index.ts"
+    "start": "nodemon src/index.ts",
+    "vercel-build": "echo hello",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
