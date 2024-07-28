@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL_1")
 }
 
 model User {
@@ -24,8 +24,8 @@ model User {
   profilePicUrl String?
 
   email        String      @unique
-  password     String      @db.Text()
-  refreshToken String?     @db.Text()
+  password     String
+  refreshToken String?
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   cart         Cart?
@@ -36,7 +36,7 @@ model User {
 model Product {
   id           String         @id @default(uuid())
   name         String
-  description  String         @db.Text()
+  description  String
   category     String
   price        Float
   stock        Int
@@ -143,8 +143,6 @@ model TrackingInfo {
   location      String
   updatedAt     DateTime @updatedAt
 }
-
-
 
 enum OrderStatus {
   PENDING

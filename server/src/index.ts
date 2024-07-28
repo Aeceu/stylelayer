@@ -11,7 +11,7 @@ import product from "./routes/product";
 
 dotenv.config();
 const app = express();
-const allowedOrigin = ["http://localhost:5173", "http://localhost:5174"];
+const allowedOrigin = ["https://styleLayer.vercel.app", "https://admin.stylelater.vercel.app"];
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(express.json());
@@ -41,3 +41,5 @@ const PORT = 4200;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT} ...`);
 });
+
+export default app;
