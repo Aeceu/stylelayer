@@ -12,7 +12,11 @@ import product from "./routes/product";
 dotenv.config();
 const app = express();
 
-const allowedOrigin = ["https://stylelayer.vercel.app", "https://admin.stylelayer.vercel.app"];
+const allowedOrigin = [
+  "https://stylelayer.vercel.app",
+  "https://admin.stylelayer.vercel.app",
+  "http://localhost:5173",
+];
 app.use((req: Request, res: Response, next: NextFunction) => {
   const origin = req.headers.origin;
   if (allowedOrigin.includes(origin!)) {
