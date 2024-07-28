@@ -13,7 +13,7 @@ dotenv.config();
 const app = express();
 const allowedOrigin = [
   "https://stylelayer.vercel.app",
-  "https://admin.stylelayer.vercel.app",
+  "https://stylelayer-5i9x.vercel.app",
   "http://localhost:5173",
 ];
 
