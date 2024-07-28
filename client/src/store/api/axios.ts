@@ -5,4 +5,5 @@ const production_url = "https://sstylelayer-h7gn.vercel.app";
 
 export default axios.create({
   baseURL: `${production_url}/api/v1`,
+  withCredentials: true,
 });
