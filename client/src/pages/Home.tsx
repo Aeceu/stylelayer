@@ -25,12 +25,15 @@ const Home = () => {
               Style Flows,
               <br /> Quality Grows.
             </h1>
-            <p className="text-background/90 tracking-widest">High quality clothing lines.</p>
+            <p className="text-background/90 tracking-widest">
+              High quality clothing lines.
+            </p>
           </span>
           <span className="flex items-center gap-2">
             <Link
               className="bg-white shadow-md text-black-shade hover:bg-white/50 rounded-full font-bold lg:text-xl text-sm  px-4 py-4"
-              to="/products?page=1&pageSize=10">
+              to="/products?page=1&pageSize=12"
+            >
               Explore Products
             </Link>
             <Button className="bg-white hover:bg-white/50  shadow-md text-black-shade rounded-full font-bold text-2xl lg:py-8 py-5">
@@ -43,15 +46,19 @@ const Home = () => {
 
         <div
           className="h-[370px] flex items-end rounded-3xl p-8 overflow-hidden  bg-no-repeat bg-center bg-cover"
-          style={{ backgroundImage: "url(/cap.jpg)" }}>
-          <h1 className="text-6xl tracking-wide font-bold text-white"># FASHION</h1>
+          style={{ backgroundImage: "url(/cap.jpg)" }}
+        >
+          <h1 className="text-6xl tracking-wide font-bold text-white">
+            # FASHION
+          </h1>
         </div>
       </div>
 
       <div className="relative overflow-hidden w-full flex items-center justify-center h-[700px]">
         <h1 className="font-bold text-5xl w-3/4 tracking-widest leading-tight text-center">
-          Timeless Fashion for the Modern Man. Trends come and go with the seasons, but our clothing
-          captures the essence of <i className="text-rose-400">enduring style</i> and{" "}
+          Timeless Fashion for the Modern Man. Trends come and go with the
+          seasons, but our clothing captures the essence of{" "}
+          <i className="text-rose-400">enduring style</i> and{" "}
           <i className="text-orange-400">sophistication</i>.
         </h1>
         <Popup delay={0.5} className="absolute top-[25%] left-[12.5%]">
@@ -106,12 +113,13 @@ const Home = () => {
             <br /> Crafted with Class.
           </h1>
           <p className="w-1/2 mt-4 text-lg tracking-wide">
-            Discover our range of premium clothing that combines style and sophistication for the
-            modern fashion enthusiast.
+            Discover our range of premium clothing that combines style and
+            sophistication for the modern fashion enthusiast.
           </p>
           <Link
             className="bg-black text-white rounded-md px-4 py-2 w-max"
-            to="/products?page=1&pageSize=10">
+            to="/products?page=1&pageSize=12"
+          >
             Browser Now
           </Link>
 
@@ -166,14 +174,20 @@ export const Phone = () => {
         </h1>
       </nav>
       <div className="bg-white-shade w-full h-full flex flex-col overflow-hidden">
-        <img src="/authbg.jpg" alt="auth" className="w-full h-[300px] object-cover" />
+        <img
+          src="/authbg.jpg"
+          alt="auth"
+          className="w-full h-[300px] object-cover"
+        />
         <div className="h-full w-full flex flex-col p-4 bg-white-shade">
           <span className="flex items-center gap-2">
             <Ellipsis className="w-10 h-10" />
             <p className="title tracking-widest text-xl ">StyleLayerCo.</p>
           </span>
           <div className="w-full h-full flex flex-col items-center justify-center gap-2">
-            <Label className="tracking-widest font-extrabold text-2xl">Welcome.</Label>
+            <Label className="tracking-widest font-extrabold text-2xl">
+              Welcome.
+            </Label>
             <span className="w-full flex flex-col gap-1 items-center">
               <p className="w-3/4  tracking-widest">Email</p>
               <Input disabled className="w-3/4" type="email" />
@@ -221,13 +235,14 @@ export const Card: React.FC<Props> = ({
   category,
   img,
   name,
-  variant,
+  variant
 }) => {
   return (
     <Popup
       duration={duration}
       delay={delay}
-      className={`overflow-hidden w-[300px] border rounded-xl p-2 bg-white shadow-lg flex flex-col gap-1 ${className}`}>
+      className={`overflow-hidden w-[300px] border rounded-xl p-2 bg-white shadow-lg flex flex-col gap-1 ${className}`}
+    >
       <img
         src={img}
         alt={name}
@@ -239,7 +254,10 @@ export const Card: React.FC<Props> = ({
         <span className="flex flex-col gap-1">
           <h1 className="text-sm font-extrabold">Variant</h1>
           {variant.map((item, i) => (
-            <p key={i} className="rounded-full px-3 py-0.5 text-xs bg-white-shade-light">
+            <p
+              key={i}
+              className="rounded-full px-3 py-0.5 text-xs bg-white-shade-light"
+            >
               {item}
             </p>
           ))}
@@ -247,7 +265,10 @@ export const Card: React.FC<Props> = ({
         <span className="flex flex-col gap-1">
           <h1 className="text-sm font-extrabold">Category</h1>
           {category.map((item, i) => (
-            <p key={i} className="rounded-full px-3 py-0.5 text-xs bg-white-shade-light">
+            <p
+              key={i}
+              className="rounded-full px-3 py-0.5 text-xs bg-white-shade-light"
+            >
               {item}
             </p>
           ))}
@@ -258,7 +279,10 @@ export const Card: React.FC<Props> = ({
       <div className="flex items-center p-1">
         <p className="pr-1">Ratings:</p>
         {Array.from({ length: 5 }).map((_, i) => (
-          <Star key={i} className={`w-4 h-4 text-orange-500 ${i + 1 <= 5 && "fill-orange-500"}`} />
+          <Star
+            key={i}
+            className={`w-4 h-4 text-orange-500 ${i + 1 <= 5 && "fill-orange-500"}`}
+          />
         ))}
       </div>
     </Popup>

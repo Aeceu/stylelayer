@@ -6,7 +6,7 @@ import {
   PackageCheck,
   ShoppingCart,
   Settings,
-  BookUser,
+  BookUser
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Cart from "./Cart";
@@ -19,10 +19,13 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
+  navigationMenuTriggerStyle
 } from "@/components/ui/navigation-menu";
 import { Label } from "./ui/label";
-import { fetchSearchProduct, getCategories } from "@/store/actions/productActions";
+import {
+  fetchSearchProduct,
+  getCategories
+} from "@/store/actions/productActions";
 import { Link } from "react-router-dom";
 import { TProduct } from "@/store/types/product";
 import Logout from "./Logout";
@@ -30,7 +33,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
@@ -105,29 +108,16 @@ const Navbar = () => {
       <div
         className={` w-full flex items-center ${
           isActive ? "justify-end" : "justify-between"
-        } gap-4`}>
+        } gap-4`}
+      >
         {!isActive && (
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem className="hidden lg:flex">
-                <NavigationMenuTrigger>
-                  <Label className="text-lg font-semibold">Categories</Label>
-                </NavigationMenuTrigger>
-                <NavigationMenuContent className="p-4 flex flex-col gap-2">
-                  {categories.map((item, i) => (
-                    <NavigationMenuLink
-                      key={i}
-                      href={`/products?page=1&pageSize=10&category=${item.category}`}
-                      className="whitespace-nowrap font-bold tracking-widest">
-                      {item.category}
-                    </NavigationMenuLink>
-                  ))}
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-              <NavigationMenuItem className="hidden lg:flex">
                 <NavigationMenuLink
-                  href="/products?page=1&pageSize=10"
-                  className={navigationMenuTriggerStyle()}>
+                  href="/products?page=1&pageSize=12"
+                  className={navigationMenuTriggerStyle()}
+                >
                   <Label className="text-lg font-semibold">Browse</Label>
                 </NavigationMenuLink>
               </NavigationMenuItem>
@@ -138,7 +128,8 @@ const Navbar = () => {
         <form
           ref={formRef}
           onFocus={() => setIsActive(true)}
-          className="relative w-full bg-white-shade rounded-full flex items-center justify-between px-2">
+          className="relative w-full bg-white-shade rounded-full flex items-center justify-between px-2"
+        >
           <input
             type="text"
             value={search}
@@ -149,14 +140,17 @@ const Navbar = () => {
           <Search className="w-8 h-8 mr-2" />
           {searchResult && (
             <div className="bg-white border rounded-md p-2 w-full absolute top-16 left-0 z-10 flex flex-col items-center gap-2">
-              {searchLoading && <Loader2 className="animate-spin w-8 h-8 text-center my-2" />}
+              {searchLoading && (
+                <Loader2 className="animate-spin w-8 h-8 text-center my-2" />
+              )}
               {searchResult.length > 0 ? (
                 searchResult.map((item, i) => (
                   <Link
                     onClick={clearSearch}
                     to={`/product?id=${item.id}`}
                     key={i}
-                    className="z-20 w-full  font-extrabold tracking-widest p-2 rounded-lg hover:bg-white-shade">
+                    className="z-20 w-full  font-extrabold tracking-widest p-2 rounded-lg hover:bg-white-shade"
+                  >
                     {item.name}
                   </Link>
                 ))
@@ -173,7 +167,8 @@ const Navbar = () => {
           <Cart />
           <Link
             to={user ? "/orders" : "/login"}
-            className=" flex items-center gap-2 cursor-pointer ">
+            className=" flex items-center gap-2 cursor-pointer "
+          >
             <span className="relative">
               <PackageCheck className="w-6 h-6 " />
               {/* <p className="bg-orange-500 text-white text-sm w-[20px] h-[20px] rounded-full text-center absolute -top-[12px] -right-[12px]">
@@ -211,13 +206,15 @@ const Navbar = () => {
             <div className="shrink-0 relative flex items-center bg-white-shade p-2 gap-1 rounded-full">
               <Link
                 to={"/login"}
-                className="px-4 py-2 flex items-center gap-1 rounded-full bg-transparent text-black hover:bg-white">
+                className="px-4 py-2 flex items-center gap-1 rounded-full bg-transparent text-black hover:bg-white"
+              >
                 <User2 className="w-4 h-4" />
                 Login
               </Link>
               <Link
                 to={"/signup"}
-                className="px-4 py-2 flex items-center gap-1 rounded-full bg-rose-600 hover:bg-rose-500 text-white">
+                className="px-4 py-2 flex items-center gap-1 rounded-full bg-rose-600 hover:bg-rose-500 text-white"
+              >
                 Sign up <ChevronRight className="w-4 h-4 " />
               </Link>
             </div>
@@ -236,31 +233,46 @@ const Navbar = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-48">
             <DropdownMenuItem className="p-0">
-              <Link to={"/profile"} className="w-full h-full p-2 flex items-center gap-2">
+              <Link
+                to={"/profile"}
+                className="w-full h-full p-2 flex items-center gap-2"
+              >
                 <User2 className="w-4 h-4" />
                 Profile
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="p-0">
-              <Link className="w-full h-full p-2 flex items-center gap-2" to={"/profile/address"}>
+              <Link
+                className="w-full h-full p-2 flex items-center gap-2"
+                to={"/profile/address"}
+              >
                 <ShoppingCart className="w-4 h-4" />
                 Cart
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="p-0">
-              <Link className="w-full h-full p-2 flex items-center gap-2" to={"/profile/settings"}>
+              <Link
+                className="w-full h-full p-2 flex items-center gap-2"
+                to={"/profile/settings"}
+              >
                 <PackageCheck className="w-4 h-4" />
                 Orders
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="p-0">
-              <Link className="w-full h-full p-2 flex items-center gap-2" to={"/profile/address"}>
+              <Link
+                className="w-full h-full p-2 flex items-center gap-2"
+                to={"/profile/address"}
+              >
                 <BookUser className="w-4 h-4" />
                 Address
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="p-0">
-              <Link className="w-full h-full p-2 flex items-center gap-2" to={"/profile/settings"}>
+              <Link
+                className="w-full h-full p-2 flex items-center gap-2"
+                to={"/profile/settings"}
+              >
                 <Settings className="w-4 h-4" />
                 Settings
               </Link>

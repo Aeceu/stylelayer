@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTrigger } from "./ui/drawer";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTrigger
+} from "./ui/drawer";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import { Label } from "./ui/label";
@@ -18,8 +24,12 @@ type AddToCartDrawerProps = {
 const AddToCartDrawer: React.FC<AddToCartDrawerProps> = ({ item }) => {
   const [open, setOpen] = useState(false);
   const [quantity, setQuantity] = useState(0);
-  const [selectedImage, setSelectedImage] = useState(item.productImage[0].imageUrl);
-  const [selectedVariants, setSelectedVariants] = useState<{ name: string; option: string }[]>([]);
+  const [selectedImage, setSelectedImage] = useState(
+    item.productImage[0].imageUrl
+  );
+  const [selectedVariants, setSelectedVariants] = useState<
+    { name: string; option: string }[]
+  >([]);
 
   const { user } = useSelector((state: RootState) => state.user);
   const { loading } = useSelector((state: RootState) => state.cart);
@@ -38,14 +48,16 @@ const AddToCartDrawer: React.FC<AddToCartDrawerProps> = ({ item }) => {
         productId: itemId,
         quantity,
         userId: user.id,
-        variants: selectedVariants,
+        variants: selectedVariants
       })
     ).finally(() => setOpen(false));
   };
 
   const handleSelectedVariants = (name: string, option: string) => {
     setSelectedVariants((prevVariants) => {
-      const existingVariantIndex = prevVariants.findIndex((variant) => variant.name === name);
+      const existingVariantIndex = prevVariants.findIndex(
+        (variant) => variant.name === name
+      );
       if (existingVariantIndex !== -1) {
         const updatedVariants = [...prevVariants];
         updatedVariants[existingVariantIndex] = { name, option };
@@ -59,7 +71,11 @@ const AddToCartDrawer: React.FC<AddToCartDrawerProps> = ({ item }) => {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button className="rounded-full border-orange-500 text-orange-500" variant={"outline"}>
+        <Button
+          className="rounded-full border border-orange-500 text-orange-500 bg-white
+            hover:bg-orange-500 hover:text-white
+          "
+        >
           Add to cart
         </Button>
       </DrawerTrigger>
@@ -86,14 +102,17 @@ const AddToCartDrawer: React.FC<AddToCartDrawerProps> = ({ item }) => {
                   src={item.imageUrl}
                   alt="Preview"
                   className={`w-[50px] h-[50px] object-cover object-top rounded-sm ${
-                    selectedImage === item.imageUrl && "border-2 border-orange-500"
+                    selectedImage === item.imageUrl &&
+                    "border-2 border-orange-500"
                   }`}
                 />
               ))}
             </span>
           </div>
           <div className="w-full leading-3 flex flex-col justify-between gap-4">
-            <Label className="tracking-wide font-bold text-4xl">{item.name}</Label>
+            <Label className="tracking-wide font-bold text-4xl">
+              {item.name}
+            </Label>
             <Separator />
             <div className="flex items-center gap-2">
               <Label className="flex items-center gap-2">
@@ -111,12 +130,16 @@ const AddToCartDrawer: React.FC<AddToCartDrawerProps> = ({ item }) => {
             </div>
 
             <div className="w-max  bg-white-shade p-4 flex items-center">
-              <Label className="text-3xl font-bold text-rose-500">₱{item.price}</Label>
+              <Label className="text-3xl font-bold text-rose-500">
+                ₱{item.price}
+              </Label>
             </div>
 
             {item.variants.map((cat, i) => (
               <div key={i} className="mt-2 flex flex-col gap-2">
-                <Label className="tracking-widest font-extrabold ">{cat.name}</Label>
+                <Label className="tracking-widest font-extrabold ">
+                  {cat.name}
+                </Label>
                 <span className="flex flex-wrap gap-2">
                   {cat.options.map((option, idx) => (
                     <div
@@ -124,10 +147,13 @@ const AddToCartDrawer: React.FC<AddToCartDrawerProps> = ({ item }) => {
                       className={`w-max px-4 py-2 border cursor-pointer hover:bg-white-shade 
                       ${
                         selectedVariants.find(
-                          (variant) => variant.name === cat.name && variant.option === option
+                          (variant) =>
+                            variant.name === cat.name &&
+                            variant.option === option
                         ) && "border border-orange-500"
                       }`}
-                      onClick={() => handleSelectedVariants(cat.name, option)}>
+                      onClick={() => handleSelectedVariants(cat.name, option)}
+                    >
                       {option}
                     </div>
                   ))}
@@ -135,24 +161,36 @@ const AddToCartDrawer: React.FC<AddToCartDrawerProps> = ({ item }) => {
               </div>
             ))}
             <div className="mt-2 flex flex-col gap-2">
-              <Label className="tracking-widest font-extrabold ">quantity</Label>
+              <Label className="tracking-widest font-extrabold ">
+                quantity
+              </Label>
               <div className="flex items-center w-max">
                 <Button
-                  onClick={() => setQuantity((prev) => (prev <= 0 ? (prev = 0) : prev - 1))}
+                  onClick={() =>
+                    setQuantity((prev) => (prev <= 0 ? (prev = 0) : prev - 1))
+                  }
                   className="w-[30px] h-[30px] border   flex items-center justify-center text-foreground bg-background hover:bg-white-shade rounded-none "
-                  size={"icon"}>
+                  size={"icon"}
+                >
                   <Minus className="w-4 h-4" />
                 </Button>
                 <Label className="w-[30px] h-[30px] border-y  flex items-center justify-center">
                   {quantity}
                 </Label>
                 <Button
-                  onClick={() => setQuantity((prev) => (prev >= item.stock ? prev : prev + 1))}
+                  onClick={() =>
+                    setQuantity((prev) =>
+                      prev >= item.stock ? prev : prev + 1
+                    )
+                  }
                   className="w-[30px] h-[30px] border   flex items-center justify-center text-foreground bg-background hover:bg-white-shade rounded-none "
-                  size={"icon"}>
+                  size={"icon"}
+                >
                   <Plus className="w-4 h-4" />
                 </Button>
-                <Label className="ml-2 text-foreground">{item.stock} pieces available</Label>
+                <Label className="ml-2 text-foreground">
+                  {item.stock} pieces available
+                </Label>
               </div>
             </div>
 
@@ -162,7 +200,8 @@ const AddToCartDrawer: React.FC<AddToCartDrawerProps> = ({ item }) => {
                 onClick={() => HandleAddToCart(item.id)}
                 className="flex items-center gap-4 border-2 text-orange-600 border-orange-600 text-lg shadow-md hover:bg-white-shade hover:text-orange-600"
                 variant={"outline"}
-                size={"lg"}>
+                size={"lg"}
+              >
                 {loading ? (
                   <>
                     Adding....
@@ -177,7 +216,8 @@ const AddToCartDrawer: React.FC<AddToCartDrawerProps> = ({ item }) => {
               <DrawerClose asChild>
                 <Button
                   variant={"outline"}
-                  className="flex items-center gap-4 border-2 text-rose-600 border-rose-600 text-lg shadow-md hover:bg-white-shade hover:text-rose-600">
+                  className="flex items-center gap-4 border-2 text-rose-600 border-rose-600 text-lg shadow-md hover:bg-white-shade hover:text-rose-600"
+                >
                   Cancel
                 </Button>
               </DrawerClose>
