@@ -57,7 +57,7 @@ const FilterBar = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const handleFilterProducts = () => {
-    sortProductsByPrice(sort, category, rate, products, dispatch);
+    sortProductsByPrice(sort, category, products, dispatch);
   };
 
   const handleClearFilter = () => {

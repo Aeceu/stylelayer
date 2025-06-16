@@ -11,7 +11,8 @@ const All = () => {
           {order.orderItems.map((orderItem, j) => (
             <div
               key={j}
-              className="shadow-md flex flex-col items-center justify-between w-[700px] h-[160px] border">
+              className="shadow-md flex flex-col items-center justify-between w-[700px] h-[160px] border"
+            >
               <div className="flex items-center justify-between h-[120px] w-full border-b">
                 <span className="w-[120px] h-full overflow-hidden">
                   <img
@@ -21,7 +22,9 @@ const All = () => {
                   />
                 </span>
                 <div className="flex flex-col justify-between gap-1 p-2 h-full w-full">
-                  <Label className="text-xl font-bold">{orderItem.product.name}</Label>
+                  <Label className="text-xl font-bold">
+                    {orderItem.product.name}
+                  </Label>
                   <span className="flex items-center justify-between gap-2">
                     <Label className="text-lg font-semibold   flex items-center gap-1">
                       Variations:
@@ -29,10 +32,13 @@ const All = () => {
                         <p key={i}>{item.option}</p>
                       ))}
                     </Label>
-                    <Label className="text-lg font-semibold  ">{orderItem.quantity} x</Label>
+                    <Label className="text-lg font-semibold  ">
+                      {orderItem.quantity} x
+                    </Label>
                   </span>
                   <Label className="text-lg font-semibold  w-full flex items-center gap-1 justify-end ">
-                    Price: <p className="text-orange-500">{orderItem.product.price}</p>
+                    Price:{" "}
+                    <p className="text-orange-500">{orderItem.product.price}</p>
                   </Label>
                 </div>
               </div>
@@ -43,7 +49,7 @@ const All = () => {
                 <Label className="text-lg font-semibold flex items-center gap-1">
                   Total Price:{" "}
                   <p className="text-orange-500">
-                    {parseFloat(orderItem.product.price) * orderItem.quantity}
+                    {orderItem.product.price * orderItem.quantity}
                   </p>
                 </Label>
               </div>

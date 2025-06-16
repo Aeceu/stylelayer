@@ -30,8 +30,7 @@ const Cart = () => {
 
   const handleSelectCartItem = (cartItem: TCartItem) => {
     setSelectedCartItems([...selectedCartItems, cartItem]);
-    const itemPrice =
-      parseInt(cartItem.product.price) * parseInt(cartItem.quantity);
+    const itemPrice = cartItem.product.price * parseInt(cartItem.quantity);
     setTotalCheckoutPrice((prev) => prev + itemPrice);
   };
 
@@ -39,8 +38,7 @@ const Cart = () => {
     setSelectedCartItems(
       selectedCartItems.filter((item) => item.id !== cartItem.id)
     );
-    const itemPrice =
-      parseInt(cartItem.product.price) * parseInt(cartItem.quantity);
+    const itemPrice = cartItem.product.price * parseInt(cartItem.quantity);
     setTotalCheckoutPrice((prev) => prev - itemPrice);
   };
 
@@ -144,8 +142,7 @@ const Cart = () => {
                   <Label className="text-black text-sm">
                     Total Price: ₱{" "}
                     {(
-                      parseInt(cartItem.product.price) *
-                      parseInt(cartItem.quantity)
+                      cartItem.product.price * parseInt(cartItem.quantity)
                     ).toLocaleString()}
                   </Label>
                   <Label className="text-black text-sm">

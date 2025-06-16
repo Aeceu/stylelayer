@@ -75,7 +75,6 @@ export const fetchSearchProductByCategory = async (
 export const sortProductsByPrice = (
   sort: string | null,
   category: string | null,
-  rate: string | null,
   products: TProduct[],
   dispatch: AppDispatch
 ) => {
