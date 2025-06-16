@@ -4,7 +4,7 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
+  SheetTrigger
 } from "../components/ui/sheet";
 import { ShoppingBag } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,13 +30,17 @@ const Cart = () => {
 
   const handleSelectCartItem = (cartItem: TCartItem) => {
     setSelectedCartItems([...selectedCartItems, cartItem]);
-    const itemPrice = parseInt(cartItem.product.price) * parseInt(cartItem.quantity);
+    const itemPrice =
+      parseInt(cartItem.product.price) * parseInt(cartItem.quantity);
     setTotalCheckoutPrice((prev) => prev + itemPrice);
   };
 
   const handleUnSelectCartItem = (cartItem: TCartItem) => {
-    setSelectedCartItems(selectedCartItems.filter((item) => item.id !== cartItem.id));
-    const itemPrice = parseInt(cartItem.product.price) * parseInt(cartItem.quantity);
+    setSelectedCartItems(
+      selectedCartItems.filter((item) => item.id !== cartItem.id)
+    );
+    const itemPrice =
+      parseInt(cartItem.product.price) * parseInt(cartItem.quantity);
     setTotalCheckoutPrice((prev) => prev - itemPrice);
   };
 
@@ -51,9 +55,9 @@ const Cart = () => {
             province: user.province || "",
             baranggay: user.baranggay,
             street: user.street,
-            other: user.other || "",
+            other: user.other || ""
           },
-          cartItem: selectedCartItems,
+          cartItem: selectedCartItems
         })
       );
     } else {
@@ -70,7 +74,8 @@ const Cart = () => {
       <Link
         to={"/login"}
         onClick={() => toast("Login first.")}
-        className=" flex items-center gap-2">
+        className=" flex items-center gap-2"
+      >
         <span className="relative">
           <ShoppingBag className="w-6 h-6" />
         </span>
@@ -86,7 +91,7 @@ const Cart = () => {
           {cart.length > 0 && (
             <span className="relative">
               <ShoppingBag className="w-6 h-6" />
-              <p className="bg-orange-500 text-white text-sm w-[20px] h-[20px] rounded-full text-center absolute -top-[12px] -right-[12px]">
+              <p className="bg-orange-500 text-white flex items-center justify-center text-xs w-[20px] h-[20px] rounded-full text-center absolute -top-[12px] -right-[12px]">
                 {cart.length}
               </p>
             </span>
@@ -101,15 +106,17 @@ const Cart = () => {
             Shopping Cart
           </SheetTitle>
           <SheetDescription>
-            Make changes to your cart here. Click checkout when you want to order your cart item.
+            Make changes to your cart here. Click checkout when you want to
+            order your cart item.
           </SheetDescription>
         </SheetHeader>
         <ScrollArea className="h-full bg-white-shade flex flex-col items-center justify-center  px-4 ">
           {cart.map((cartItem: TCartItem, i) => (
             <div
               key={i}
-              className="w-full h-full bg-white flex flex-col  shadow-md rounded-md my-4 border">
-              <div className="py-1 px-2 border-b  flex items-center gap-2 border-b">
+              className="w-full h-full bg-white flex flex-col  shadow-md rounded-md my-4 border"
+            >
+              <div className="py-1 px-2 flex items-center gap-2 border-b">
                 <Checkbox
                   onCheckedChange={(prev) => {
                     if (prev) {
@@ -137,10 +144,13 @@ const Cart = () => {
                   <Label className="text-black text-sm">
                     Total Price: ₱{" "}
                     {(
-                      parseInt(cartItem.product.price) * parseInt(cartItem.quantity)
+                      parseInt(cartItem.product.price) *
+                      parseInt(cartItem.quantity)
                     ).toLocaleString()}
                   </Label>
-                  <Label className="text-black text-sm">Quantity: {cartItem.quantity} pieces</Label>
+                  <Label className="text-black text-sm">
+                    Quantity: {cartItem.quantity} pieces
+                  </Label>
                   <Label className="text-black text-sm flex items-center gap-1">
                     Variations:
                     {cartItem.variants.map((item, i) => (
@@ -150,9 +160,12 @@ const Cart = () => {
 
                   <span className="mt-2 flex items-center justify-end gap-1">
                     <Button
-                      onClick={() => dispatch(handleRemoveFromCart(cartItem.id))}
+                      onClick={() =>
+                        dispatch(handleRemoveFromCart(cartItem.id))
+                      }
                       size={"sm"}
-                      className="text-xs bg-rose-500 hover:bg-rose-600 text-white">
+                      className="text-xs bg-rose-500 hover:bg-rose-600 text-white"
+                    >
                       Delete
                     </Button>
                   </span>
@@ -174,7 +187,8 @@ const Cart = () => {
               disabled={orderStatus === "pending"}
               onClick={handleCheckOut}
               size="sm"
-              className="bg-orange-500 text-white text-xs">
+              className="bg-orange-500 text-white text-xs"
+            >
               {orderStatus === "pending" ? "Checking out...." : "Check out"}
             </Button>
           </span>

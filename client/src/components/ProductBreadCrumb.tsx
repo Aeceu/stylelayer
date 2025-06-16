@@ -4,7 +4,7 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator,
+  BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
 import { FC } from "react";
 import { Link } from "react-router-dom";
@@ -20,13 +20,13 @@ const ProductBreadCrumb: FC<Props> = ({ category, name }) => {
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link to={`/`}>Home</Link>
+            <Link to={`/products?page=1`}>Browse</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link to={`/products?page=1&pageSize=10&category=${category}`}>{category}</Link>
+            <Link to={`/products?page=1&category=${category}`}>{category}</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />

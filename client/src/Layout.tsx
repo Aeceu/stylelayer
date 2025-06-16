@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar";
 
 const Layout = () => {
   return (
-    <div className="w-full h-screen flex flex-col">
+    <div className="">
       <DiscountAds />
       <Navbar />
       <Outlet />

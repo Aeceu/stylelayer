@@ -24,7 +24,7 @@ export const handleAddToCart = createAsyncThunk(
       userId,
       productId,
       quantity,
-      variants,
+      variants
     }: {
       userId: string | null;
       productId: string;
@@ -33,11 +33,16 @@ export const handleAddToCart = createAsyncThunk(
     },
     { rejectWithValue }
   ) => {
+    if (!productId || variants.length === 0 || quantity < 1) {
+      toast.error("Please select first!");
+      return rejectWithValue("Please select first!");
+    }
+
     try {
       const res = await axios.post(`/cart/${userId}`, {
         productId,
         quantity,
-        variants,
+        variants
       });
       toast.success(res.data.message);
       return res.data;

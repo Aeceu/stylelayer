@@ -7,7 +7,7 @@ import {
   getProductById,
   getSearchByCategory,
   updateProductInformation,
-  updateProductStock,
+  updateProductStock
 } from "../controllers/product";
 
 const router = express.Router();

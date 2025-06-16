@@ -1,6 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { TProduct } from "../types/product";
-import { fetchProducts, fetchProductsByCategory } from "../actions/productActions";
+import {
+  fetchProducts,
+  fetchProductsByCategory
+} from "../actions/productActions";
 
 type TInitialState = {
   products: TProduct[];
@@ -11,7 +14,7 @@ type TInitialState = {
 const initialState: TInitialState = {
   products: [],
   status: "idle",
-  totalPage: 1,
+  totalPage: 1
 };
 
 const productSlice = createSlice({
@@ -25,6 +28,9 @@ const productSlice = createSlice({
     setTotalPage: (state, action) => {
       state.totalPage = action.payload;
     },
+    setProducts: (state, action) => {
+      state.products = action.payload;
+    }
   },
   extraReducers(builder) {
     builder
@@ -52,8 +58,9 @@ const productSlice = createSlice({
       .addCase(fetchProductsByCategory.rejected, (state) => {
         state.status = "failed";
       });
-  },
+  }
 });
 
-export const { clearProducts, setTotalPage } = productSlice.actions;
+export const { clearProducts, setTotalPage, setProducts } =
+  productSlice.actions;
 export default productSlice.reducer;

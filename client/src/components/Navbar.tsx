@@ -14,18 +14,13 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
   navigationMenuTriggerStyle
 } from "@/components/ui/navigation-menu";
 import { Label } from "./ui/label";
-import {
-  fetchSearchProduct,
-  getCategories
-} from "@/store/actions/productActions";
+import { fetchSearchProduct } from "@/store/actions/productActions";
 import { Link } from "react-router-dom";
 import { TProduct } from "@/store/types/product";
 import Logout from "./Logout";
@@ -40,23 +35,12 @@ const Navbar = () => {
   const { user } = useSelector((state: RootState) => state.user);
   const [isActive, setIsActive] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [categories, setCategories] = useState<{ category: string }[]>([]);
 
   const [searchLoading, setSearchLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState<TProduct[] | null>(null);
 
   const formRef = useRef<HTMLFormElement | null>(null);
-
-  useEffect(() => {
-    getCategories().then((res) => {
-      if (Array.isArray(res)) {
-        setCategories(res);
-      } else {
-        console.log(res);
-      }
-    });
-  }, []);
 
   useEffect(() => {
     if (search) {
@@ -115,7 +99,7 @@ const Navbar = () => {
             <NavigationMenuList>
               <NavigationMenuItem className="hidden lg:flex">
                 <NavigationMenuLink
-                  href="/products?page=1&pageSize=12"
+                  href="/products?page=1"
                   className={navigationMenuTriggerStyle()}
                 >
                   <Label className="text-lg font-semibold">Browse</Label>
@@ -180,7 +164,7 @@ const Navbar = () => {
           {user ? (
             <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
               <DropdownMenuTrigger asChild>
-                <div className="shadow-md relative flex items-center gap-1 bg-orange-400 text-white px-4 py-2 rounded-full">
+                <div className="cursor-pointer shadow-md relative flex items-center gap-1 bg-orange-400 text-white px-4 py-2 rounded-full">
                   <User2 className="w-6 h-6" />
                   <h1 className="text-lg tracking-widest font-bold">Account</h1>
                 </div>

@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 const Home = () => {
   return (
     <div className="w-full">
-      <div className="h-full grid grid-cols-1 lg:grid-cols-[1fr_700px] gap-4 p-8">
+      <div className=" grid grid-cols-1 lg:grid-cols-[1fr_700px] gap-4 p-8">
         <div className="p-8 relative rounded-3xl bg-black-shade row-span-2 overflow-hidden flex flex-col justify-between gap-4">
           <img
             loading="lazy"
@@ -32,7 +32,7 @@ const Home = () => {
           <span className="flex items-center gap-2">
             <Link
               className="bg-white shadow-md text-black-shade hover:bg-white/50 rounded-full font-bold lg:text-xl text-sm  px-4 py-4"
-              to="/products?page=1&pageSize=12"
+              to="/products?page=1"
             >
               Explore Products
             </Link>
@@ -118,7 +118,7 @@ const Home = () => {
           </p>
           <Link
             className="bg-black text-white rounded-md px-4 py-2 w-max"
-            to="/products?page=1&pageSize=12"
+            to="/products?page=1"
           >
             Browser Now
           </Link>

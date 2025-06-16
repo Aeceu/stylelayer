@@ -9,7 +9,7 @@ type Props = {
 
 const ProductCard: React.FC<Props> = ({ item }) => {
   return (
-    <div className="w-[200px] h-[300px] shadow-md flex flex-col leading-snug border">
+    <div className="w-[200px] h-[300px] shadow-md flex flex-col leading-snug border hover:border-orange-500">
       <Link
         to={`/product?id=${item.id}`}
         className="bg-[#e2e2e1] w-full h-[300px] overflow-hidden  relative cursor-pointer"

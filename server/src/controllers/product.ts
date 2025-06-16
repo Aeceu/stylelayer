@@ -10,11 +10,11 @@ export const createProduct = async (req: Request, res: Response) => {
       data.productImages.map(async (image) => {
         const uploadResponse = await cloudinary.uploader.upload(image, {
           folder: "stylelayer/productImage",
-          transformation: [{ quality: "auto" }],
+          transformation: [{ quality: "auto" }]
         });
         return {
           imageId: uploadResponse.public_id,
-          imageUrl: uploadResponse.secure_url,
+          imageUrl: uploadResponse.secure_url
         };
       })
     );
@@ -29,20 +29,20 @@ export const createProduct = async (req: Request, res: Response) => {
         variants: data.variants,
         productImage: {
           createMany: {
-            data: productImages,
-          },
-        },
-      },
+            data: productImages
+          }
+        }
+      }
     });
     res.status(200).json({
       message: "New product created successfully!",
-      newProduct,
+      newProduct
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "Failed to create product!",
-      error,
+      error
     });
   }
 };
@@ -52,11 +52,11 @@ export const deleteProduct = async (req: Request, res: Response) => {
   try {
     const product = await prisma.product.findFirst({
       where: {
-        id: productId,
+        id: productId
       },
       include: {
-        productImage: true,
-      },
+        productImage: true
+      }
     });
 
     if (!product) {
@@ -69,17 +69,17 @@ export const deleteProduct = async (req: Request, res: Response) => {
 
     await prisma.product.delete({
       where: {
-        id: productId,
-      },
+        id: productId
+      }
     });
     res.status(200).json({
-      message: "Product deleted successfully!",
+      message: "Product deleted successfully!"
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "Failed to delete product!",
-      error,
+      error
     });
   }
 };
@@ -91,22 +91,22 @@ export const updateProductInformation = async (req: Request, res: Response) => {
   try {
     const product = await prisma.product.update({
       where: {
-        id: productId,
+        id: productId
       },
       data: {
-        ...data,
-      },
+        ...data
+      }
     });
 
     res.status(200).json({
       message: "Product information updated succesfully!",
-      product,
+      product
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "Failed to update product information!",
-      error,
+      error
     });
   }
 };
@@ -117,24 +117,24 @@ export const updateProductStock = async (req: Request, res: Response) => {
   try {
     const product = await prisma.product.update({
       where: {
-        id: productId,
+        id: productId
       },
       data: {
-        stock,
+        stock
       },
       include: {
-        productImage: true,
-      },
+        productImage: true
+      }
     });
     res.status(200).json({
       message: "Product updated succesfully!",
-      product,
+      product
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "Failed to update product stock!",
-      error,
+      error
     });
   }
 };
@@ -152,21 +152,21 @@ export const getAllProducts = async (req: Request, res: Response) => {
     if (category) {
       products = await prisma.product.findMany({
         where: {
-          category,
+          category
         },
         skip: (page - 1) * pageSize,
         take: pageSize,
         include: {
-          productImage: true,
-        },
+          productImage: true
+        }
       });
     } else {
       products = await prisma.product.findMany({
         skip: (page - 1) * pageSize,
         take: pageSize,
         include: {
-          productImage: true,
-        },
+          productImage: true
+        }
       });
     }
 
@@ -176,13 +176,13 @@ export const getAllProducts = async (req: Request, res: Response) => {
     res.status(200).json({
       products,
       totalPages,
-      currentPage: page,
+      currentPage: page
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "Failed to get all the products",
-      error,
+      error
     });
   }
 };
@@ -193,19 +193,19 @@ export const getProductById = async (req: Request, res: Response) => {
 
     const product = await prisma.product.findFirst({
       where: {
-        id: productId,
+        id: productId
       },
       include: {
         productImage: true,
-        ratings: true,
-      },
+        ratings: true
+      }
     });
     res.status(200).json(product);
   } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "Failed to get the product!",
-      error,
+      error
     });
   }
 };
@@ -214,9 +214,9 @@ export const getCategories = async (req: Request, res: Response) => {
   try {
     const categories = await prisma.product.findMany({
       select: {
-        category: true,
+        category: true
       },
-      distinct: ["category"],
+      distinct: ["category"]
     });
 
     res.status(200).json(categories);
@@ -224,7 +224,7 @@ export const getCategories = async (req: Request, res: Response) => {
     console.log(error);
     res.status(500).json({
       message: "Failed to get categories!",
-      error,
+      error
     });
   }
 };
@@ -240,23 +240,23 @@ export const getSearchByCategory = async (req: Request, res: Response) => {
         where: {
           category,
           name: {
-            contains: search,
-          },
+            contains: search
+          }
         },
         include: {
-          productImage: true,
-        },
+          productImage: true
+        }
       });
     } else {
       products = await prisma.product.findMany({
         where: {
           name: {
-            contains: search,
-          },
+            contains: search
+          }
         },
         include: {
-          productImage: true,
-        },
+          productImage: true
+        }
       });
     }
     res.status(200).json(products);
@@ -264,7 +264,7 @@ export const getSearchByCategory = async (req: Request, res: Response) => {
     console.log(error);
     res.status(500).json({
       message: "Failed to get the products!",
-      error,
+      error
     });
   }
 };
