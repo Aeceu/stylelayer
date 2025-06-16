@@ -1,6 +1,6 @@
 import cors from "cors";
 import dotenv from "dotenv";
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 
@@ -14,7 +14,7 @@ const app = express();
 const allowedOrigin = [
   "https://stylelayer.vercel.app",
   "https://stylelayer-5i9x.vercel.app",
-  "http://localhost:5173",
+  "http://localhost:5173"
 ];
 
 app.use(bodyParser.json({ limit: "50mb" }));
@@ -23,7 +23,7 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: allowedOrigin,
-    credentials: true,
+    credentials: true
   })
 );
 
