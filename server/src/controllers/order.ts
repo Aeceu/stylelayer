@@ -9,27 +9,30 @@ export const getUserOrders = async (req: Request, res: Response) => {
 
     const orders = await prisma.order.findMany({
       where: {
-        userId,
+        userId
       },
       include: {
         orderItems: {
           include: {
             product: {
               include: {
-                productImage: true,
-              },
-            },
-          },
+                productImage: true
+              }
+            }
+          }
         },
-        trackingInfo: true,
+        trackingInfo: true
       },
+      orderBy: {
+        createdAt: "desc"
+      }
     });
     res.status(200).json(orders);
   } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "Failed to order item!",
-      error,
+      error
     });
   }
 };
@@ -41,13 +44,13 @@ export const createOrder = async (req: Request, res: Response) => {
   try {
     const user = await prisma.user.findFirst({
       where: {
-        id: userId,
-      },
+        id: userId
+      }
     });
 
     if (!user)
       return res.status(403).json({
-        message: "User not found!",
+        message: "User not found!"
       });
 
     const totalAmount = cartItem
@@ -65,25 +68,25 @@ export const createOrder = async (req: Request, res: Response) => {
           trackingInfo: {
             create: {
               currentStatus: "preparing your package",
-              location: "Pasig City",
-            },
+              location: "Pasig City"
+            }
           },
           orderItems: {
             createMany: {
               data: cartItem.map((item) => ({
                 productId: item.product.id,
                 quantity: Number(item.quantity),
-                variants: item.variants,
-              })),
-            },
+                variants: item.variants
+              }))
+            }
           },
           region: address.region,
           province: address.province,
           city: address.city,
           baranggay: address.baranggay,
           street: address.street,
-          other: address.other,
-        },
+          other: address.other
+        }
       });
 
       // Update the product quantities
@@ -91,13 +94,13 @@ export const createOrder = async (req: Request, res: Response) => {
         cartItem.map((item) =>
           prisma.product.update({
             where: {
-              id: item.product.id,
+              id: item.product.id
             },
             data: {
               stock: {
-                decrement: Number(item.quantity),
-              },
-            },
+                decrement: Number(item.quantity)
+              }
+            }
           })
         )
       );
@@ -107,8 +110,8 @@ export const createOrder = async (req: Request, res: Response) => {
         cartItem.map((item) =>
           prisma.cartItem.delete({
             where: {
-              id: item.id,
-            },
+              id: item.id
+            }
           })
         )
       );
@@ -118,13 +121,13 @@ export const createOrder = async (req: Request, res: Response) => {
 
     res.status(200).json({
       message: "Order successfully!",
-      newOrder,
+      newOrder
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "Failed to order item!",
-      error,
+      error
     });
   }
 };
@@ -135,26 +138,26 @@ export const updateOrder = async (req: Request, res: Response) => {
     const { status, trackingInfo }: TUpdateOrder = req.body;
     const order = await prisma.order.update({
       where: {
-        id: orderId,
+        id: orderId
       },
       data: {
         status,
         trackingInfo: {
           update: {
             currentStatus: trackingInfo.currentStatus,
-            location: trackingInfo.location,
-          },
-        },
-      },
+            location: trackingInfo.location
+          }
+        }
+      }
     });
     res.status(200).json({
       message: "Order updated successfully!",
-      updatedOrder: order,
+      updatedOrder: order
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: "Failed to update order!",
+      message: "Failed to update order!"
     });
   }
 };
@@ -165,7 +168,7 @@ export const cancelOrder = async (req: Request, res: Response) => {
 
     const canceledOrder = await prisma.order.update({
       where: {
-        id: orderId,
+        id: orderId
       },
       data: {
         status: "CANCELLED",
@@ -175,20 +178,20 @@ export const cancelOrder = async (req: Request, res: Response) => {
         city: "",
         baranggay: "",
         street: "",
-        other: "",
-      },
+        other: ""
+      }
     });
 
     res.status(200).json({
       message: "Order cancel successfully!",
       error,
-      canceledOrder,
+      canceledOrder
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "Failed to cancel order.",
-      error,
+      error
     });
   }
 };
@@ -199,27 +202,27 @@ export const getOrderById = async (req: Request, res: Response) => {
 
     const order = await prisma.order.findFirst({
       where: {
-        id: orderId,
+        id: orderId
       },
       include: {
         orderItems: {
           include: {
             product: {
               include: {
-                productImage: true,
-              },
-            },
-          },
+                productImage: true
+              }
+            }
+          }
         },
-        trackingInfo: true,
-      },
+        trackingInfo: true
+      }
     });
     res.status(200).json(order);
   } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "Failed to order item!",
-      error,
+      error
     });
   }
 };
@@ -242,7 +245,7 @@ export const getOrders = async (req: Request, res: Response) => {
     if (status && status !== "ALL") {
       orders = await prisma.order.findMany({
         where: {
-          status,
+          status
         },
         skip: (page - 1) * pageSize,
         take: pageSize,
@@ -251,13 +254,16 @@ export const getOrders = async (req: Request, res: Response) => {
             include: {
               product: {
                 include: {
-                  productImage: true,
-                },
-              },
-            },
+                  productImage: true
+                }
+              }
+            }
           },
-          trackingInfo: true,
+          trackingInfo: true
         },
+        orderBy: {
+          createdAt: "desc"
+        }
       });
     } else {
       orders = await prisma.order.findMany({
@@ -268,13 +274,16 @@ export const getOrders = async (req: Request, res: Response) => {
             include: {
               product: {
                 include: {
-                  productImage: true,
-                },
-              },
-            },
+                  productImage: true
+                }
+              }
+            }
           },
-          trackingInfo: true,
+          trackingInfo: true
         },
+        orderBy: {
+          createdAt: "asc"
+        }
       });
     }
     totalOrders = await prisma.product.count();
@@ -283,7 +292,7 @@ export const getOrders = async (req: Request, res: Response) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: "Failed to get all orders",
+      message: "Failed to get all orders"
     });
   }
 };
@@ -295,7 +304,7 @@ export const getOrderByStatus = async (req: Request, res: Response) => {
     const orderByStatus = await prisma.order.findMany({
       where: {
         status,
-        userId,
+        userId
       },
       include: {
         trackingInfo: true,
@@ -303,19 +312,22 @@ export const getOrderByStatus = async (req: Request, res: Response) => {
           include: {
             product: {
               include: {
-                productImage: true,
-              },
-            },
-          },
-        },
+                productImage: true
+              }
+            }
+          }
+        }
       },
+      orderBy: {
+        createdAt: "desc"
+      }
     });
     res.status(200).json(orderByStatus);
   } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "Failed to get pending orders",
-      error,
+      error
     });
   }
 };
@@ -326,10 +338,10 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
     const { status } = req.body;
     const order = await prisma.order.update({
       where: {
-        id: orderId,
+        id: orderId
       },
       data: {
-        status,
+        status
       },
       include: {
         trackingInfo: true,
@@ -337,21 +349,21 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
           include: {
             product: {
               include: {
-                productImage: true,
-              },
-            },
-          },
-        },
-      },
+                productImage: true
+              }
+            }
+          }
+        }
+      }
     });
     res.status(200).json({
       message: "Order updated successfully!",
-      updatedOrder: order,
+      updatedOrder: order
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: "Failed to update order!",
+      message: "Failed to update order!"
     });
   }
 };

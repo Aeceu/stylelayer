@@ -11,7 +11,7 @@ export const handleSignup = createAsyncThunk(
       firstName,
       lastName,
       password,
-      navigate,
+      navigate
     }: {
       email: string;
       password: string;
@@ -22,7 +22,12 @@ export const handleSignup = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const res = await axios.post("/signup", { email, password, firstName, lastName });
+      const res = await axios.post("/signup", {
+        email,
+        password,
+        firstName,
+        lastName
+      });
       console.log(res.data);
       toast.success(res.data.message);
       navigate("/login");
@@ -41,7 +46,7 @@ export const handleLogin = createAsyncThunk(
     {
       email,
       password,
-      navigate,
+      navigate
     }: { email: string; password: string; navigate: (path: string) => void },
     { rejectWithValue }
   ) => {
@@ -50,7 +55,7 @@ export const handleLogin = createAsyncThunk(
         "/login",
         { email, password },
         {
-          withCredentials: true,
+          withCredentials: true
         }
       );
       console.log(res.data);
@@ -70,9 +75,8 @@ export const handleRefresh = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await axios.get("/refresh", {
-        withCredentials: true,
+        withCredentials: true
       });
-      console.log(res.data);
       return res.data;
     } catch (error) {
       console.log(error);
@@ -87,7 +91,7 @@ export const handleLogout = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await axios.get("/logout", {
-        withCredentials: true,
+        withCredentials: true
       });
       console.log(res.data);
       toast.success("Log out successfully!");
@@ -137,7 +141,10 @@ export const handleUpdateUser = createAsyncThunk(
 
 export const handleUpdateUserProfile = createAsyncThunk(
   "user/handleUpdateUserProfile",
-  async ({ image, userId }: { userId: string | undefined; image: string }, { rejectWithValue }) => {
+  async (
+    { image, userId }: { userId: string | undefined; image: string },
+    { rejectWithValue }
+  ) => {
     try {
       const res = await axios.patch(`/user/image/${userId}`, { data: image });
       toast.success(res.data.message);

@@ -23,7 +23,8 @@ const Orders = () => {
   return (
     <Tabs
       defaultValue={"ALL"}
-      className="w-full p-8 flex flex-col items-center h-[calc(100vh-140px)]">
+      className="w-full p-8 flex flex-col items-center h-[calc(100vh-140px)]"
+    >
       <TabsList className="h-max">
         <TabsTrigger className="px-8 py-4 " value="ALL">
           All
@@ -44,7 +45,7 @@ const Orders = () => {
           Cancelled
         </TabsTrigger>
       </TabsList>
-      <TabsContent value="ALL" className="w-full h-full">
+      <TabsContent value="ALL" className="w-full h-full overflow-y-auto">
         <All />
       </TabsContent>
       <TabsContent value="PENDING" className="w-full h-full">

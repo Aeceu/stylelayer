@@ -35,6 +35,20 @@ export type TOrder = {
   other?: string;
 };
 
+export type TOrderItem = {
+  id: string;
+  product: TProduct;
+  quantity: number;
+  variants: [
+    {
+      name: string;
+      option: string;
+    }
+  ];
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export type TNewOrder = {
   cartItem: {
     product: {

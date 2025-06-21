@@ -1,17 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { TOrder } from "../types/order";
-import { handleCreateOrder, handleGetOrderById, handleGetOrders } from "../actions/orderAction";
+import { handleCreateOrder, handleGetOrders } from "../actions/orderAction";
 
 type TInitialState = {
   orders: TOrder[];
-  order: TOrder | null;
   orderStatus: "idle" | "pending" | "completed" | "failed";
 };
 
 const initialState: TInitialState = {
   orders: [],
-  order: null,
-  orderStatus: "idle",
+  orderStatus: "idle"
 };
 
 const userSlice = createSlice({
@@ -20,7 +18,7 @@ const userSlice = createSlice({
   reducers: {
     setOrder: (state, action) => {
       state.orders = action.payload;
-    },
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -37,15 +35,8 @@ const userSlice = createSlice({
       .addCase(handleCreateOrder.fulfilled, (state, action) => {
         state.orderStatus = "completed";
         state.orders.push(action.payload.newOrder);
-      })
-      .addCase(handleGetOrderById.pending, (state) => {
-        state.orderStatus = "pending";
-      })
-      .addCase(handleGetOrderById.fulfilled, (state, action) => {
-        state.orderStatus = "completed";
-        state.order = action.payload;
       });
-  },
+  }
 });
 
 export const { setOrder } = userSlice.actions;
