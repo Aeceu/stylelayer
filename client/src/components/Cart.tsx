@@ -86,14 +86,14 @@ const Cart = () => {
     <Sheet>
       <SheetTrigger asChild>
         <div className=" flex items-center gap-2 cursor-pointer ">
-          {cart.length > 0 && (
-            <span className="relative">
-              <ShoppingBag className="w-6 h-6" />
+          <span className="relative">
+            <ShoppingBag className="w-6 h-6" />
+            {cart.length > 0 && (
               <p className="bg-orange-500 text-white flex items-center justify-center text-xs w-[20px] h-[20px] rounded-full text-center absolute -top-[12px] -right-[12px]">
                 {cart.length}
               </p>
-            </span>
-          )}
+            )}
+          </span>
           <h1 className="text-sm">Cart</h1>
         </div>
       </SheetTrigger>

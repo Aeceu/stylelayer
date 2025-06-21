@@ -251,7 +251,8 @@ export const getSearchByCategory = async (req: Request, res: Response) => {
       products = await prisma.product.findMany({
         where: {
           name: {
-            contains: search
+            contains: search,
+            mode: "insensitive"
           }
         },
         include: {

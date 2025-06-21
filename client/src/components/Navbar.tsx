@@ -30,6 +30,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
+import { useDebounce } from "@/hooks/  useDebounce";
 
 const Navbar = () => {
   const { user } = useSelector((state: RootState) => state.user);
@@ -37,29 +38,39 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [searchLoading, setSearchLoading] = useState(false);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState<string>("");
   const [searchResult, setSearchResult] = useState<TProduct[] | null>(null);
 
   const formRef = useRef<HTMLFormElement | null>(null);
 
+  const debounceSearch = useDebounce<string>(search, 500);
+
   useEffect(() => {
-    if (search) {
+    const fetchResult = async () => {
+      if (!debounceSearch || debounceSearch.length < 2) {
+        setSearch("");
+        setSearchLoading(false);
+        setSearchResult(null);
+        return;
+      }
       setSearchLoading(true);
-      fetchSearchProduct(search)
-        .then((res) => {
-          if (Array.isArray(res)) {
-            setSearchResult(res);
-          } else {
-            console.log(res);
-          }
-        })
-        .finally(() => {
-          setSearchLoading(false);
-        });
-    } else {
-      setSearchResult(null);
-    }
-  }, [search]);
+      try {
+        const res = await fetchSearchProduct(debounceSearch);
+
+        if (Array.isArray(res)) {
+          setSearchResult(res);
+        } else {
+          console.log("Unexpected result from search:", res);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setSearchLoading(false);
+      }
+    };
+
+    fetchResult();
+  }, [debounceSearch]);
 
   useEffect(() => {
     const handleBlur = (event: MouseEvent) => {
